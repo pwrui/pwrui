@@ -1,6 +1,6 @@
 {
   "name": "pwrui",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "A framework for building interactive React apps.",
   "main": "dist/index.js",
   "module": "dist/index.js",
