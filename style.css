@@ -1,0 +1,120 @@
+@import "material-symbols";
+
+:root {
+  --base-foreground: 15, 15, 15;
+  --base-background: 255, 255, 255;
+
+  --base-grey: 140, 140, 150;
+  --base-blue: 0, 150, 235;
+  --base-red: 210, 30, 20;
+  --base-green: 0, 180, 60;
+  --base-orange: 210, 120, 20;
+
+  --color-foreground: rgb(var(--base-foreground));
+  --color-background: rgb(var(--base-background));
+
+  --color-blue: rgb(var(--base-blue));
+  --color-blue-light: rgba(var(--base-blue), 0.2);
+  --color-red: rgb(var(--base-red));
+  --color-red-light: rgba(var(--base-red), 0.2);
+  --color-green: rgb(var(--base-green));
+  --color-green-light: rgba(var(--base-green), 0.2);
+  --color-orange: rgb(var(--base-orange));
+  --color-orange-light: rgba(var(--base-orange), 0.2);
+
+  --color-primary: var(--color-blue);
+  --color-primary-light: var(--color-blue-light);
+
+  --color-grey: rgb(var(--base-grey));
+  --color-grey-light: rgba(var(--base-grey), 0.16);
+  --color-shape: color-mix(in srgb, var(--color-grey) 8%, var(--color-background));
+  --color-shape-highlighted: color-mix(in srgb, var(--color-grey) 16%, var(--color-background));
+
+  --shadow-drop: drop-shadow(0 5px 5px rgba(0, 0, 0, 0.18));
+  --shadow-1: 0 3px 6px rgba(0, 0, 0, 0.06), 0 3px 6px rgba(0, 0, 0, 0.08);
+  --shadow-2: 0 10px 20px rgba(0, 0, 0, 0.06), 0 6px 6px rgba(0, 0, 0, 0.08);
+  --shadow-3: 0 14px 28px rgba(0, 0, 0, 0.07), 0 10px 10px rgba(0, 0, 0, 0.08);
+  --shadow-4: 0 19px 38px rgba(0, 0, 0, 0.1), 0 15px 12px rgba(0, 0, 0, 0.08);
+
+  accent-color: var(--color-primary);
+  --gap: 10px;
+  --radius: 12px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --base-foreground: 236, 244, 247;
+    --base-background: 9, 19, 28;
+  }
+}
+
+/* dropdowns */
+
+.dropdown {
+  min-height: 40px;
+  line-height: 1em;
+  border: 1px solid var(--color-foreground-light);
+  border-radius: var(--layout-radius);
+  cursor: pointer;
+  user-select: none;
+
+  &.expanded {
+    border-radius: var(--layout-radius) var(--layout-radius) 0 0;
+  }
+
+  &>.icon {
+    position: absolute;
+    top: calc(50% - 0.5em);
+    right: 6px;
+    pointer-events: none;
+  }
+}
+
+.dropdown-value {
+  width: 100%;
+  padding: 0 30px 0 var(--layout-gap);
+  position: absolute;
+  top: calc(50% - 0.5em);
+  line-height: 1em;
+}
+
+.dropdown-list {
+  width: 100%;
+  background: var(--color-background);
+  border-radius: var(--layout-radius);
+  cursor: pointer;
+  overflow-y: auto;
+
+  &>div {
+    border-radius: inherit;
+    background: var(--color-shape);
+  }
+}
+
+.dropdown .dropdown-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.dropdown:not(.expanded) .dropdown-list {
+  display: none;
+}
+
+.dropdown-item {
+  padding: var(--layout-gap);
+  background: none;
+  border-radius: var(--layout-radius);
+
+  &.active {
+    color: var(--color-primary);
+    background: var(--color-primary-light);
+  }
+
+  &:hover {
+    background: var(--color-primary-light-fill);
+  }
+}

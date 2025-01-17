@@ -1,0 +1,22 @@
+{
+  "name": "pwrui",
+  "version": "0.0.10",
+  "description": "A framework for building interactive React apps.",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": ["react", "ui"],
+  "author": "wipmate",
+  "license": "MIT",
+  "peerDependencies": {
+    "material-symbols": "^0.27.2",
+    "react": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.7",
+    "typescript": "^5.7.3"
+  }
+}
