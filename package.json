@@ -15,7 +15,8 @@
     "build": "tsc"
   },
   "files": [
-    "dist"
+    "dist",
+    "style.css"
   ],
   "repository": {
     "type": "git",
