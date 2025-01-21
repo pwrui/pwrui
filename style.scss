@@ -17,13 +17,13 @@
   --opacity-color-light: 22%;
 
   --color-blue: rgb(var(--base-blue));
-  --color-blue-light: rgba(var(--base-blue), var(--opacity-color-semi-light));
+  --color-blue-light: rgba(var(--base-blue), var(--opacity-color-light));
   --color-red: rgb(var(--base-red));
-  --color-red-light: rgba(var(--base-red), var(--opacity-color-semi-light));
+  --color-red-light: rgba(var(--base-red), var(--opacity-color-light));
   --color-green: rgb(var(--base-green));
-  --color-green-light: rgba(var(--base-green), var(--opacity-color-semi-light));
+  --color-green-light: rgba(var(--base-green), var(--opacity-color-light));
   --color-orange: rgb(var(--base-orange));
-  --color-orange-light: rgba(var(--base-orange), var(--opacity-color-semi-light));
+  --color-orange-light: rgba(var(--base-orange), var(--opacity-color-light));
 
   --color-primary: var(--color-blue);
   --color-primary-light: var(--color-blue-light);
