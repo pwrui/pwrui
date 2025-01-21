@@ -5,15 +5,6 @@ export function Button(props: PropsWithChildren<{ className?: string, disabled?:
     const [ignorePress, setIgnorePress] = useState(false);
     return (
         <button
-            {...otherProps}
-            style={{
-                ...style,
-                ...(theme ? {
-                    color: theme,
-                    backgroundColor: `color-mix(in srgb, ${theme} 14%, transparent)`,
-                    "--color-shape-highlighted": `color-mix(in srgb, ${theme} 22%, transparent)`,
-                } : {}),
-            }}
             onMouseDown={(event: MouseEvent<HTMLButtonElement>) => {
                 if (event.button === 0) {
                     event.stopPropagation();
@@ -31,6 +22,16 @@ export function Button(props: PropsWithChildren<{ className?: string, disabled?:
                 }
                 setIgnorePress(false);
             }}
+            style={{
+                ...style,
+                ...(theme ? {
+                    color: theme,
+                    backgroundColor: `color-mix(in srgb, ${theme} 14%, transparent)`,
+                    "--color-shape-highlighted": `color-mix(in srgb, ${theme} 22%, transparent)`,
+                } : {}),
+            }}
+            type="button"
+            {...otherProps}
         >
             {children}
         </button>

@@ -1,4 +1,4 @@
-import { HTMLProps, JSX, useEffect, useRef } from "react";
+import { HTMLProps, JSX, useEffect, useRef, useState } from "react";
 import { Icon } from "./Icon.js";
 
 function toggleClass(element: HTMLElement, className: string) {
@@ -13,9 +13,11 @@ export type DropdownOption = { value: string | number, label: JSX.Element | stri
 
 export function Dropdown({ options, setValue, selectDefaultValue = true, displayAsList = false, ...props }: HTMLProps<HTMLDivElement> & { options: DropdownOption[], setValue: (value: string | number) => void, selectDefaultValue?: boolean, displayAsList?: boolean }): JSX.Element {
     const dropdown = useRef<HTMLDivElement>(null);
+    const [inputValue, setInputValue] = useState(props.value);
     useEffect(() => {
         if (selectDefaultValue && options.length && !options.map(value => value.value).includes(props.value as string | number)) {
             setValue(options[0].value);
+            setInputValue(options[0].value);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps -- dependency to setValue breaks the behavior
     }, [options]);
@@ -28,7 +30,7 @@ export function Dropdown({ options, setValue, selectDefaultValue = true, display
         document.addEventListener("click", listener);
         return () => document.removeEventListener("click", listener);
     }, [options]);
-    const list = <div className="dropdown-list">
+    const list = <div className="dropdown-list" style={{ maxHeight: displayAsList ? undefined : 220 }}>
         <div {...(displayAsList ? props : {})}>
             {options.length ? options.map(option => <div
                 key={option.value}
@@ -43,6 +45,7 @@ export function Dropdown({ options, setValue, selectDefaultValue = true, display
         <div className="dropdown-value">
             {options.length ? options.find(option => option.value == props.value)?.label : <i>No options</i>}
         </div>
+        <input type="hidden" value={inputValue} name={props.name} />
         <Icon style={{
             position: "absolute",
             top: "calc(50% - 0.5em)",
