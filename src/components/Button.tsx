@@ -26,8 +26,8 @@ export function Button(props: PropsWithChildren<ButtonHTMLAttributes<HTMLButtonE
                 ...style,
                 ...(theme ? {
                     color: theme,
-                    backgroundColor: `color-mix(in srgb, ${theme} --color-opacity-lightest, transparent)`,
-                    "--color-shape-highlighted": `color-mix(in srgb, ${theme} --color-opacity-light, transparent)`,
+                    backgroundColor: `color-mix(in srgb, ${theme} var(--opacity-color-lightest), transparent)`,
+                    "--color-shape-highlighted": `color-mix(in srgb, ${theme} var(--opacity-color-light), transparent)`,
                 } : {}),
             }}
             type="button"
