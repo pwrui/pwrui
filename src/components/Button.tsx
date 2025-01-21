@@ -1,6 +1,6 @@
-import { CSSProperties, JSX, MouseEvent, PropsWithChildren, useState } from "react";
+import { ButtonHTMLAttributes, JSX, MouseEvent, PropsWithChildren, useState } from "react";
 
-export function Button(props: PropsWithChildren<{ className?: string, disabled?: boolean, onPress: (event?: MouseEvent<HTMLButtonElement>) => void, style?: CSSProperties, theme?: string }>): JSX.Element {
+export function Button(props: PropsWithChildren<ButtonHTMLAttributes<HTMLButtonElement> & { onPress: (event?: MouseEvent<HTMLButtonElement>) => void, theme?: string }>): JSX.Element {
     const { style, onPress, children, theme, ...otherProps } = props;
     const [ignorePress, setIgnorePress] = useState(false);
     return (
