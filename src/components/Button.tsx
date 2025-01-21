@@ -1,6 +1,6 @@
 import { ButtonHTMLAttributes, JSX, MouseEvent, PropsWithChildren, useState } from "react";
 
-export function Button(props: PropsWithChildren<ButtonHTMLAttributes<HTMLButtonElement> & { onPress: (event?: MouseEvent<HTMLButtonElement>) => void, theme?: string }>): JSX.Element {
+export function Button(props: PropsWithChildren<ButtonHTMLAttributes<HTMLButtonElement> & { onPress?: (event?: MouseEvent<HTMLButtonElement>) => void, theme?: string }>): JSX.Element {
     const { style, onPress, children, theme, ...otherProps } = props;
     const [ignorePress, setIgnorePress] = useState(false);
     return (
@@ -26,8 +26,8 @@ export function Button(props: PropsWithChildren<ButtonHTMLAttributes<HTMLButtonE
                 ...style,
                 ...(theme ? {
                     color: theme,
-                    backgroundColor: `color-mix(in srgb, ${theme} 14%, transparent)`,
-                    "--color-shape-highlighted": `color-mix(in srgb, ${theme} 22%, transparent)`,
+                    backgroundColor: `color-mix(in srgb, ${theme} --color-opacity-lightest, transparent)`,
+                    "--color-shape-highlighted": `color-mix(in srgb, ${theme} --color-opacity-light, transparent)`,
                 } : {}),
             }}
             type="button"

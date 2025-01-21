@@ -13,20 +13,23 @@
   --color-foreground: rgb(var(--base-foreground));
   --color-background: rgb(var(--base-background));
 
+  --color-opacity-lightest: 15%;
+  --color-opacity-light: 22%;
+
   --color-blue: rgb(var(--base-blue));
-  --color-blue-light: rgba(var(--base-blue), 0.2);
+  --color-blue-light: rgba(var(--base-blue), --color-opacity-semi-light);
   --color-red: rgb(var(--base-red));
-  --color-red-light: rgba(var(--base-red), 0.2);
+  --color-red-light: rgba(var(--base-red), --color-opacity-semi-light);
   --color-green: rgb(var(--base-green));
-  --color-green-light: rgba(var(--base-green), 0.2);
+  --color-green-light: rgba(var(--base-green), --color-opacity-semi-light);
   --color-orange: rgb(var(--base-orange));
-  --color-orange-light: rgba(var(--base-orange), 0.2);
+  --color-orange-light: rgba(var(--base-orange), --color-opacity-semi-light);
 
   --color-primary: var(--color-blue);
   --color-primary-light: var(--color-blue-light);
 
   --color-grey: rgb(var(--base-grey));
-  --color-grey-light: rgba(var(--base-grey), 0.16);
+  --color-grey-light: rgba(var(--base-grey), 16%);
   --color-shape: color-mix(in srgb, var(--color-grey) 8%, var(--color-background));
   --color-shape-highlighted: color-mix(in srgb, var(--color-grey) 16%, var(--color-background));
 
