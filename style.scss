@@ -1,4 +1,4 @@
-@import "material-symbols";
+@import "material-symbols/index.css";
 
 :root {
   --base-foreground: 15, 15, 15;
@@ -36,9 +36,10 @@
   --shadow-3: 0 14px 28px rgba(0, 0, 0, 0.07), 0 10px 10px rgba(0, 0, 0, 0.08);
   --shadow-4: 0 19px 38px rgba(0, 0, 0, 0.1), 0 15px 12px rgba(0, 0, 0, 0.08);
 
-  accent-color: var(--color-primary);
   --gap: 10px;
   --radius: 12px;
+
+  accent-color: var(--color-primary);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -48,18 +49,55 @@
   }
 }
 
+/* buttons */
+
+button {
+  padding: calc(var(--gap) / 2);
+  display: inline-flex;
+  vertical-align: middle;
+  flex-direction: row;
+  gap: calc(var(--gap) / 2);
+  justify-content: center;
+  align-items: center;
+  border-radius: var(--radius);
+  box-shadow: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  background: var(--color-shape);
+  user-select: none;
+  outline: none;
+
+  &:hover {
+    background: var(--color-shape-highlighted) !important;
+  }
+
+  &.transparent {
+    background: none !important;
+  }
+
+  &:disabled {
+    pointer-events: none;
+    opacity: 0.6;
+  }
+}
+
 /* dropdowns */
 
 .dropdown {
   min-height: 40px;
   line-height: 1em;
-  border: 1px solid var(--color-foreground-light);
-  border-radius: var(--layout-radius);
+  background: var(--color-shape);
+  border-radius: var(--radius);
   cursor: pointer;
   user-select: none;
 
   &.expanded {
-    border-radius: var(--layout-radius) var(--layout-radius) 0 0;
+    border-radius: var(--radius) var(--radius) 0 0;
+  }
+
+  &:not(.expanded):hover {
+    background: var(--color-shape-highlighted);
   }
 
   &>.icon {
@@ -72,7 +110,7 @@
 
 .dropdown-value {
   width: 100%;
-  padding: 0 30px 0 var(--layout-gap);
+  padding: 0 30px 0 var(--gap);
   position: absolute;
   top: calc(50% - 0.5em);
   line-height: 1em;
@@ -81,7 +119,7 @@
 .dropdown-list {
   width: 100%;
   background: var(--color-background);
-  border-radius: var(--layout-radius);
+  border-radius: var(--radius);
   cursor: pointer;
   overflow-y: auto;
 
@@ -105,16 +143,16 @@
 }
 
 .dropdown-item {
-  padding: var(--layout-gap);
+  padding: var(--gap);
   background: none;
-  border-radius: var(--layout-radius);
+  border-radius: var(--radius);
 
   &.active {
     color: var(--color-primary);
     background: var(--color-primary-light);
   }
 
-  &:hover {
-    background: var(--color-primary-light-fill);
+  &:hover:not(.active) {
+    background: var(--color-shape-highlighted);
   }
 }

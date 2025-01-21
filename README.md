@@ -18,10 +18,33 @@ yarn add pwrui
 
 ## Usage
 
+Import the following stylesheet in your main JS file:
+
+```js
+import "pwrui/style.css";
+```
+
+The library currently provides the following components:
+
+- `<Button />`
+- `<Checkbox />`
+- `<Dropdown />`
+- `<Icon />`
+
 The following example shows how to use the [Material Symbols](https://fonts.google.com/icons) included in pwrui:
 
 ```jsx
 import { Icon } from "pwrui";
 
-const icon = <Icon smartphone />;
+<Icon smartphone />
+```
+
+Buttons in pwrui support action handlers with the included `onPress` attribute:
+
+```jsx
+import { Button } from "pwrui";
+
+<Button onPress={() => doStuff()}>
+  Do Stuff
+</Button>
 ```

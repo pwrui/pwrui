@@ -1,0 +1,38 @@
+import { CSSProperties, JSX, MouseEvent, PropsWithChildren, useState } from "react";
+
+export function Button(props: PropsWithChildren<{ className?: string, disabled?: boolean, onPress: (event?: MouseEvent<HTMLButtonElement>) => void, style?: CSSProperties, theme?: string }>): JSX.Element {
+    const { style, onPress, children, theme, ...otherProps } = props;
+    const [ignorePress, setIgnorePress] = useState(false);
+    return (
+        <button
+            {...otherProps}
+            style={{
+                ...style,
+                ...(theme ? {
+                    color: theme,
+                    backgroundColor: `color-mix(in srgb, ${theme} 14%, transparent)`,
+                    "--color-shape-highlighted": `color-mix(in srgb, ${theme} 22%, transparent)`,
+                } : {}),
+            }}
+            onMouseDown={(event: MouseEvent<HTMLButtonElement>) => {
+                if (event.button === 0) {
+                    event.stopPropagation();
+                    setIgnorePress(true);
+                    onPress?.(event);
+                }
+            }}
+            onMouseUp={() => {
+
+            }}
+            onClick={(event: MouseEvent<HTMLButtonElement>) => {
+                event.stopPropagation();
+                if (!ignorePress) {
+                    onPress?.(event);
+                }
+                setIgnorePress(false);
+            }}
+        >
+            {children}
+        </button>
+    );
+}
