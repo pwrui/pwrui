@@ -1,42 +1,44 @@
 @import "material-symbols/index.css";
 
+$colors: "red", "green", "blue";
+$opacity-levels: "minimum", "low", "medium", "high";
+
 :root {
   --base-foreground: 15, 15, 15;
   --base-background: 255, 255, 255;
 
   --base-grey: 140, 140, 150;
-  --base-blue: 0, 150, 235;
-  --base-red: 210, 30, 20;
+  --base-red: 230, 50, 40;
   --base-green: 0, 180, 60;
+  --base-blue: 0, 150, 235;
   --base-orange: 210, 120, 20;
 
   --color-foreground: rgb(var(--base-foreground));
   --color-background: rgb(var(--base-background));
 
-  --opacity-color-lightest: 15%;
-  --opacity-color-light: 22%;
+  --opacity-color-minimum: 10%;
+  --opacity-color-low: 20%;
+  --opacity-color-medium: 30%;
+  --opacity-color-high: 60%;
 
-  --color-blue: rgb(var(--base-blue));
-  --color-blue-light: rgba(var(--base-blue), var(--opacity-color-light));
-  --color-blue-lightest: rgba(var(--base-blue), var(--opacity-color-lightest));
-  --color-red: rgb(var(--base-red));
-  --color-red-light: rgba(var(--base-red), var(--opacity-color-light));
-  --color-red-lightest: rgba(var(--base-red), var(--opacity-color-lightest));
-  --color-green: rgb(var(--base-green));
-  --color-green-light: rgba(var(--base-green), var(--opacity-color-light));
-  --color-green-lightest: rgba(var(--base-green), var(--opacity-color-lightest));
-  --color-orange: rgb(var(--base-orange));
-  --color-orange-light: rgba(var(--base-orange), var(--opacity-color-light));
-  --color-orange-lightest: rgba(var(--base-orange), var(--opacity-color-lightest));
+  @each $color in $colors {
+    --color-#{$color}: rgb(var(--base-#{$color}));
+
+    @each $level in $opacity-levels {
+      --color-#{$color}-#{$level}: color-mix(in srgb, rgb(var(--base-#{$color})) var(--opacity-color-#{$level}), var(--color-background));
+    }
+  }
+
+  --color-shape-minimum: color-mix(in srgb, var(--color-foreground) calc(var(--opacity-color-minimum) / 2), var(--color-background));
+  --color-shape-low: color-mix(in srgb, var(--color-foreground) calc(var(--opacity-color-low) / 2), var(--color-background));
+  --color-shape-medium: color-mix(in srgb, var(--color-foreground) calc(var(--opacity-color-medium) / 2), var(--color-background));
+  --color-shape-high: color-mix(in srgb, var(--color-foreground) calc(var(--opacity-color-high) / 2), var(--color-background));
 
   --color-primary: var(--color-blue);
-  --color-primary-light: var(--color-blue-light);
-  --color-primary-lightest: var(--color-blue-lightest);
-
-  --color-grey: rgb(var(--base-grey));
-  --color-grey-light: rgba(var(--base-grey), 16%);
-  --color-shape: color-mix(in srgb, var(--color-grey) 8%, var(--color-background));
-  --color-shape-highlighted: color-mix(in srgb, var(--color-grey) 16%, var(--color-background));
+  --color-primary-minimum: var(--color-blue-minimum);
+  --color-primary-low: var(--color-blue-low);
+  --color-primary-medium: var(--color-blue-medium);
+  --color-primary-high: var(--color-blue-high);
 
   --shadow-drop: drop-shadow(0 5px 5px rgba(0, 0, 0, 0.18));
   --shadow-1: 0 3px 6px rgba(0, 0, 0, 0.06), 0 3px 6px rgba(0, 0, 0, 0.08);
@@ -74,12 +76,12 @@ button {
   border: none;
   color: inherit;
   cursor: pointer;
-  background: var(--color-shape);
+  background: var(--color-shape-low);
   user-select: none;
   outline: none;
 
   &:hover {
-    background: var(--color-shape-highlighted) !important;
+    background: var(--color-shape-medium) !important;
   }
 
   &.transparent {
@@ -97,7 +99,7 @@ button {
 .dropdown {
   min-height: 40px;
   line-height: 1em;
-  background: var(--color-shape);
+  background: var(--color-shape-low);
   border-radius: var(--radius);
   cursor: pointer;
   user-select: none;
@@ -107,7 +109,7 @@ button {
   }
 
   &:not(.expanded):hover {
-    background: var(--color-shape-highlighted);
+    background: var(--color-shape-medium);
   }
 
   &>.icon {
@@ -128,14 +130,14 @@ button {
 
 .dropdown-list {
   width: 100%;
-  background: var(--color-background);
+  background: var(--color-shape-low);
   border-radius: var(--radius);
   cursor: pointer;
   overflow-y: auto;
 
   &>div {
     border-radius: inherit;
-    background: var(--color-shape);
+    background: var(--color-shape-low);
   }
 }
 
@@ -159,10 +161,10 @@ button {
 
   &.active {
     color: var(--color-primary);
-    background: var(--color-primary-light);
+    background: var(--color-primary-low);
   }
 
   &:hover:not(.active) {
-    background: var(--color-shape-highlighted);
+    background: var(--color-shape-medium);
   }
 }
