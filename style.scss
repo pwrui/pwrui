@@ -1,6 +1,6 @@
 @import "material-symbols/index.css";
 
-$colors: "red", "green", "blue";
+$colors: "red", "green", "blue", "orange";
 $opacity-levels: "minimum", "low", "medium", "high";
 
 :root {
@@ -25,14 +25,34 @@ $opacity-levels: "minimum", "low", "medium", "high";
     --color-#{$color}: rgb(var(--base-#{$color}));
 
     @each $level in $opacity-levels {
-      --color-#{$color}-#{$level}: color-mix(in srgb, rgb(var(--base-#{$color})) var(--opacity-color-#{$level}), var(--color-background));
+      --color-#{$color}-#{$level}: color-mix(
+        in srgb,
+        rgb(var(--base-#{$color})) var(--opacity-color-#{$level}),
+        var(--color-background)
+      );
     }
   }
 
-  --color-shape-minimum: color-mix(in srgb, var(--color-foreground) calc(var(--opacity-color-minimum) / 2), var(--color-background));
-  --color-shape-low: color-mix(in srgb, var(--color-foreground) calc(var(--opacity-color-low) / 2), var(--color-background));
-  --color-shape-medium: color-mix(in srgb, var(--color-foreground) calc(var(--opacity-color-medium) / 2), var(--color-background));
-  --color-shape-high: color-mix(in srgb, var(--color-foreground) calc(var(--opacity-color-high) / 2), var(--color-background));
+  --color-shape-minimum: color-mix(
+    in srgb,
+    var(--color-foreground) calc(var(--opacity-color-minimum) / 2),
+    var(--color-background)
+  );
+  --color-shape-low: color-mix(
+    in srgb,
+    var(--color-foreground) calc(var(--opacity-color-low) / 2),
+    var(--color-background)
+  );
+  --color-shape-medium: color-mix(
+    in srgb,
+    var(--color-foreground) calc(var(--opacity-color-medium) / 2),
+    var(--color-background)
+  );
+  --color-shape-high: color-mix(
+    in srgb,
+    var(--color-foreground) calc(var(--opacity-color-high) / 2),
+    var(--color-background)
+  );
 
   --color-primary: var(--color-blue);
   --color-primary-minimum: var(--color-blue-minimum);
@@ -59,10 +79,24 @@ $opacity-levels: "minimum", "low", "medium", "high";
   }
 }
 
+/* icons */
+
+.icon {
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+  vertical-align: top;
+  user-select: none;
+}
+
 /* buttons */
 
 button {
-  padding: calc(var(--gap) / 2);
+  width: fit-content;
+  min-height: calc(var(--gap) + 24px);
+  padding: calc(var(--gap) / 2) var(--gap);
   display: inline-flex;
   vertical-align: middle;
   flex-direction: row;
@@ -97,8 +131,9 @@ button {
 /* dropdowns */
 
 .dropdown {
-  min-height: 40px;
-  line-height: 1em;
+  display: inline-flex;
+  vertical-align: middle;
+
   background: var(--color-shape-low);
   border-radius: var(--radius);
   cursor: pointer;
@@ -112,7 +147,7 @@ button {
     background: var(--color-shape-medium);
   }
 
-  &>.icon {
+  & > .icon {
     position: absolute;
     top: calc(50% - 0.5em);
     right: 6px;
@@ -122,10 +157,7 @@ button {
 
 .dropdown-value {
   width: 100%;
-  padding: 0 30px 0 var(--gap);
-  position: absolute;
-  top: calc(50% - 0.5em);
-  line-height: 1em;
+  padding: calc(var(--gap) / 2) var(--gap);
 }
 
 .dropdown-list {
@@ -135,7 +167,7 @@ button {
   cursor: pointer;
   overflow-y: auto;
 
-  &>div {
+  & > div {
     border-radius: inherit;
     background: var(--color-shape-low);
   }
@@ -155,13 +187,13 @@ button {
 }
 
 .dropdown-item {
-  padding: var(--gap);
+  padding: calc(var(--gap) / 2) var(--gap);
   background: none;
   border-radius: var(--radius);
 
   &.active {
     color: var(--color-primary);
-    background: var(--color-primary-low);
+    background: var(--color-primary-medium);
   }
 
   &:hover:not(.active) {

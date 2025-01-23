@@ -11,16 +11,24 @@ function toggleClass(element: HTMLElement, className: string) {
 
 export type DropdownOption = { value: string | number, label: JSX.Element | string };
 
-export function Dropdown({ options, setValue, selectDefaultValue = true, displayAsList = false, ...props }: HTMLProps<HTMLDivElement> & { options: DropdownOption[], setValue: (value: string | number) => void, selectDefaultValue?: boolean, displayAsList?: boolean }): JSX.Element {
+export function Dropdown({ options, value, setValue, selectDefaultValue = true, displayAsList = false, ref, ...props }: HTMLProps<HTMLDivElement> & Pick<HTMLProps<HTMLInputElement>, "ref"> & { options: DropdownOption[], value: string | number, setValue: (value: string | number) => void, selectDefaultValue?: boolean, displayAsList?: boolean }): JSX.Element {
     const dropdown = useRef<HTMLDivElement>(null);
-    const [inputValue, setInputValue] = useState(props.value);
+    const [inputValue, setInputValue] = useState<string | number>(value);
+    const hasInteracted = useRef(false);
+
     useEffect(() => {
-        if (selectDefaultValue && options.length && !options.map(value => value.value).includes(props.value as string | number)) {
-            setValue(options[0].value);
+        if (selectDefaultValue && options.length && !options.map(value => value.value).includes(value as string | number)) {
             setInputValue(options[0].value);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps -- dependency to setValue breaks the behavior
-    }, [options]);
+    }, [options, setInputValue]);
+
+    useEffect(() => {
+        if (selectDefaultValue || hasInteracted.current) {
+            setValue(inputValue);
+        }
+    }, [inputValue]);
+
     useEffect(() => {
         const listener = (event: MouseEvent) => {
             if (dropdown.current && !dropdown.current.contains(event.target as Node)) {
@@ -30,28 +38,35 @@ export function Dropdown({ options, setValue, selectDefaultValue = true, display
         document.addEventListener("click", listener);
         return () => document.removeEventListener("click", listener);
     }, [options]);
+
     const list = <div className="dropdown-list" style={{ maxHeight: displayAsList ? undefined : 220 }}>
         <div {...(displayAsList ? props : {})}>
             {options.length ? options.map(option => <div
                 key={option.value}
-                className={"dropdown-item" + (option.value == props.value ? " active" : "")}
-                onClick={() => setValue(option.value)}
+                className={"dropdown-item" + (option.value == value ? " active" : "")}
+                onClick={() => (hasInteracted.current = true, setInputValue(option.value))}
             >
                 {option.label}
             </div>) : <div className="dropdown-item">No options available</div>}
         </div>
     </div>;
-    return displayAsList ? list : <div {...props} className="dropdown" ref={dropdown} onClick={() => dropdown.current && options.length ? toggleClass(dropdown.current, "expanded") : null}>
-        <div className="dropdown-value">
-            {options.length ? options.find(option => option.value == props.value)?.label : <i>No options</i>}
-        </div>
-        <input type="hidden" value={inputValue} name={props.name} />
-        <Icon style={{
-            position: "absolute",
-            top: "calc(50% - 0.5em)",
-            right: 6,
-            pointerEvents: "none",
-        }} keyboard_arrow_down />
-        {list}
-    </div>;
+
+    return <>
+        <input type="hidden" value={inputValue} name={props.name} ref={ref} />
+        {displayAsList
+            ? list
+            : <div {...props} className="dropdown" ref={dropdown} onClick={() => dropdown.current && options.length ? toggleClass(dropdown.current, "expanded") : null}>
+                <div className="dropdown-value">
+                    {options.length ? options.find(option => option.value == value)?.label : <i>No options</i>}
+                </div>
+                <Icon style={{
+                    position: "absolute",
+                    top: "calc(50% - 0.5em)",
+                    right: 6,
+                    pointerEvents: "none",
+                }} keyboard_arrow_down />
+                {list}
+            </div>
+        }
+    </>;
 }
