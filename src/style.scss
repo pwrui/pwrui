@@ -1,4 +1,4 @@
-@import "material-symbols/index.css";
+@use "material-symbols";
 
 $colors: "red", "green", "blue", "orange";
 $opacity-levels: "minimum", "low", "medium", "high";
@@ -79,18 +79,6 @@ $opacity-levels: "minimum", "low", "medium", "high";
   }
 }
 
-/* icons */
-
-.icon {
-  font-variation-settings:
-    "FILL" 0,
-    "wght" 400,
-    "GRAD" 0,
-    "opsz" 24;
-  vertical-align: top;
-  user-select: none;
-}
-
 /* buttons */
 
 button {
@@ -128,16 +116,30 @@ button {
   }
 }
 
+/* cards */
+
+.card {
+  padding: var(--gap);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  background: var(--color-shape-minimum);
+  border-radius: var(--radius);
+}
+
 /* dropdowns */
 
 .dropdown {
   display: inline-flex;
   vertical-align: middle;
+  flex-direction: row;
+  align-items: center;
 
   background: var(--color-shape-low);
   border-radius: var(--radius);
   cursor: pointer;
   user-select: none;
+  position: relative;
 
   &.expanded {
     border-radius: var(--radius) var(--radius) 0 0;
@@ -158,6 +160,10 @@ button {
 .dropdown-value {
   width: 100%;
   padding: calc(var(--gap) / 2) var(--gap);
+}
+
+.dropdown-icon {
+  pointer-events: none;
 }
 
 .dropdown-list {
@@ -192,6 +198,7 @@ button {
   border-radius: var(--radius);
 
   &.active {
+    font-weight: 600;
     color: var(--color-primary);
     background: var(--color-primary-medium);
   }
@@ -199,4 +206,16 @@ button {
   &:hover:not(.active) {
     background: var(--color-shape-medium);
   }
+}
+
+/* icons */
+
+.icon {
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+  vertical-align: top;
+  user-select: none;
 }
