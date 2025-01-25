@@ -66,6 +66,7 @@ $opacity-levels: "minimum", "low", "medium", "high";
   --shadow-3: 0 14px 28px rgba(0, 0, 0, 0.07), 0 10px 10px rgba(0, 0, 0, 0.08);
   --shadow-4: 0 19px 38px rgba(0, 0, 0, 0.1), 0 15px 12px rgba(0, 0, 0, 0.08);
 
+  --size-icon: 24px;
   --gap: 10px;
   --radius: 12px;
 
@@ -83,7 +84,7 @@ $opacity-levels: "minimum", "low", "medium", "high";
 
 button {
   width: fit-content;
-  min-height: calc(var(--gap) + 24px);
+  min-height: calc(var(--gap) + var(--size-icon));
   padding: calc(var(--gap) / 2) var(--gap);
   display: inline-flex;
   vertical-align: middle;
@@ -107,6 +108,8 @@ button {
   }
 
   &.transparent {
+    padding-left: 0;
+    padding-right: 0;
     background: none !important;
     font-weight: inherit;
   }
@@ -131,6 +134,9 @@ button {
 /* dropdowns */
 
 .dropdown {
+  min-height: calc(var(--gap) + var(--size-icon));
+  padding: calc(var(--gap) / 2) var(--gap);
+  box-sizing: border-box;
   display: inline-flex;
   vertical-align: middle;
   flex-direction: row;
@@ -150,21 +156,15 @@ button {
     background: var(--color-shape-medium);
   }
 
-  & > .icon {
-    position: absolute;
-    top: calc(50% - 0.5em);
-    right: 6px;
+  .dropdown-value {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .dropdown-icon {
     pointer-events: none;
   }
-}
-
-.dropdown-value {
-  width: 100%;
-  padding: calc(var(--gap) / 2) var(--gap);
-}
-
-.dropdown-icon {
-  pointer-events: none;
 }
 
 .dropdown-list {
@@ -212,6 +212,7 @@ button {
 /* icons */
 
 .icon {
+  font-size: var(--size-icon);
   font-variation-settings:
     "FILL" 0,
     "wght" 400,
@@ -258,7 +259,7 @@ button {
   }
 
   svg {
-    width: 24px;
+    width: var(--size-icon);
     animation: rotate-spinner 2s linear infinite;
 
     circle {
