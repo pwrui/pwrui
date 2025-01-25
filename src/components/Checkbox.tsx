@@ -20,7 +20,7 @@ export function Checkbox({ children, style, value, onValueChange, setCheckedOnPr
     style={{ ...style }}
     className="transparent"
   >
-    <Icon style={{ color: checked ? "var(--color-primary)" : "var(--color-foreground-high)", height: "24px" }} icon={checked ? "check_box" : "check_box_outline_blank"} />
+    <Icon style={{ color: checked ? "var(--color-primary)" : "var(--color-shape-high)", height: "24px" }} icon={checked ? "check_box" : "check_box_outline_blank"} />
     {children ?? null}
   </Button>;
 }

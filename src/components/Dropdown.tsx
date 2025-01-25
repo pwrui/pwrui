@@ -11,9 +11,9 @@ function toggleClass(element: HTMLElement, className: string) {
 
 export type DropdownOption = { value: string | number, label: JSX.Element | string };
 
-export function Dropdown({ options, value, setValue, selectDefaultValue = true, displayAsList = false, ref, ...props }: HTMLProps<HTMLDivElement> & Pick<HTMLProps<HTMLInputElement>, "ref"> & { options: DropdownOption[], value: string | number, setValue: (value: string | number) => void, selectDefaultValue?: boolean, displayAsList?: boolean }): JSX.Element {
+export function Dropdown({ options, value, setValue, selectDefaultValue = true, displayAsList = false, ref, ...props }: HTMLProps<HTMLDivElement> & Pick<HTMLProps<HTMLInputElement>, "ref"> & { options: DropdownOption[], value?: string | number, setValue: (value: string | number) => void, selectDefaultValue?: boolean, displayAsList?: boolean }): JSX.Element {
   const dropdown = useRef<HTMLDivElement>(null);
-  const [inputValue, setInputValue] = useState<string | number>(value);
+  const [inputValue, setInputValue] = useState<string | number | undefined>(value);
   const hasInteracted = useRef(false);
 
   useEffect(() => {
@@ -24,7 +24,7 @@ export function Dropdown({ options, value, setValue, selectDefaultValue = true, 
   }, [options, setInputValue]);
 
   useEffect(() => {
-    if (selectDefaultValue || hasInteracted.current) {
+    if (inputValue !== undefined && (selectDefaultValue || hasInteracted.current)) {
       setValue(inputValue);
     }
   }, [inputValue]);

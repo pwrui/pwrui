@@ -31,6 +31,7 @@ The library currently provides the following components:
 - `<Checkbox />`
 - `<Dropdown />`
 - `<Icon />`
+- `<Spinner />`
 - `<ThemeSelector />`
 
 The following example shows how to use the [Material Symbols](https://fonts.google.com/icons) included in pwrui:

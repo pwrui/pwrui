@@ -108,6 +108,7 @@ button {
 
   &.transparent {
     background: none !important;
+    font-weight: inherit;
   }
 
   &:disabled {
@@ -218,4 +219,76 @@ button {
     "opsz" 24;
   vertical-align: top;
   user-select: none;
+}
+
+/* spinner */
+
+.spinner {
+  transition:
+    opacity 0.05s ease,
+    visibility 0.05s ease;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--gap);
+
+  &.fullscreen {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 3;
+    align-items: center;
+    background: color-mix(in srgb, var(--color-background) 50%, transparent);
+    backdrop-filter: blur(6px);
+
+    svg {
+      width: 48px;
+
+      circle {
+        stroke-width: 5px;
+      }
+    }
+  }
+
+  &.hidden {
+    visibility: hidden;
+    opacity: 0;
+  }
+
+  svg {
+    width: 24px;
+    animation: rotate-spinner 2s linear infinite;
+
+    circle {
+      fill: none;
+      stroke-width: 6px;
+      stroke-dasharray: 1, 200;
+      stroke-dashoffset: 0;
+      animation: fillunfill-spinner 1.5s ease-in-out infinite;
+      stroke-linecap: round;
+      stroke: var(--color-primary);
+    }
+  }
+}
+
+@keyframes rotate-spinner {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@keyframes fillunfill-spinner {
+  0% {
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -35;
+  }
+  100% {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -124;
+  }
 }
