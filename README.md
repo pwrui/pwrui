@@ -1,4 +1,4 @@
-# ⚡ pwrui
+# ![](src/pwrui.svg) pwrui
 
 Still in its early stages, pwrui is intended to grow into a powerful, flexible, and easy-to-use library for building interactive [React](https://github.com/facebook/react) applications.  
 While pwrui is best used in applications based on [React Router](https://github.com/remix-run/react-router) (framework), most of its assets and components can be used in any environment.
