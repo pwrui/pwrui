@@ -103,8 +103,10 @@ button {
   user-select: none;
   outline: none;
 
+  --hover-background: var(--color-shape-medium);
+
   &:hover {
-    background: var(--color-shape-medium) !important;
+    background: var(--hover-background) !important;
   }
 
   &.transparent {
@@ -194,7 +196,12 @@ button {
 }
 
 .dropdown-item {
+  min-height: calc(var(--gap) + var(--size-icon));
   padding: calc(var(--gap) / 2) var(--gap);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   background: none;
   border-radius: var(--radius);
 
