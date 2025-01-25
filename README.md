@@ -6,6 +6,10 @@ While pwrui is best used in applications based on [React Router](https://github.
 > [!WARNING]
 > This project is work in progress.
 
+## Demo
+
+Check out the [demo page](https://pwrui.wipmate.de/) for an overview on the available components and assets.
+
 ## Installation
 
 Run one of the following commands to add pwrui to your project, depending on your package manager:
