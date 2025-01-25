@@ -1,7 +1,7 @@
 {
   "name": "pwrui",
-  "version": "0.0.24",
-  "description": "A framework for building interactive React apps.",
+  "version": "0.0.25",
+  "description": "A library for building interactive React apps.",
   "author": "wipmate",
   "keywords": [
     "react",
@@ -9,7 +9,7 @@
   ],
   "license": "MIT",
   "scripts": {
-    "build": "tsc && sass --style compressed --no-source-map style.scss dist/style.css"
+    "build": "tsc && cp node_modules/material-symbols/*.woff2 dist/ && sass --style compressed --no-source-map -I node_modules --quiet-deps src/style.scss dist/style.css"
   },
   "main": "dist/index.js",
   "module": "dist/index.js",

@@ -1,7 +1,7 @@
 # ⚡ pwrui
 
-Still in its early stages, pwrui is intended to grow into a powerful, flexible, and easy-to-use framework for building interactive [React](https://github.com/facebook/react) applications.  
-While pwrui is best used in applications based on [React Router](https://github.com/remix-run/react-router) (framework), most of its basic components can be used in any environment.
+Still in its early stages, pwrui is intended to grow into a powerful, flexible, and easy-to-use library for building interactive [React](https://github.com/facebook/react) applications.  
+While pwrui is best used in applications based on [React Router](https://github.com/remix-run/react-router) (framework), most of its assets and components can be used in any environment.
 
 > [!WARNING]
 > This project is work in progress.
@@ -26,10 +26,12 @@ import "pwrui/style.css";
 
 The library currently provides the following components:
 
+- `<Card />`
 - `<Button />`
 - `<Checkbox />`
 - `<Dropdown />`
 - `<Icon />`
+- `<ThemeSelector />`
 
 The following example shows how to use the [Material Symbols](https://fonts.google.com/icons) included in pwrui:
 
