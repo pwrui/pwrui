@@ -23,11 +23,7 @@ export function Button(props: PropsWithChildren<ButtonHTMLAttributes<HTMLButtonE
         setIgnorePress(false);
       }}
       style={{
-        ...(theme ? {
-          color: theme,
-          background: `color-mix(in srgb, ${theme} var(--opacity-color-low), var(--color-background))`,
-          "--hover-background": `color-mix(in srgb, ${theme} var(--opacity-color-medium), var(--color-background))`,
-        } : {}),
+        ...(theme ? { color: theme, "--opacity-multiplier": 1 } : {}),
         ...style,
       }}
       type="button"

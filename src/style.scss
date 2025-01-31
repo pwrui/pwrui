@@ -16,10 +16,11 @@ $opacity-levels: "minimum", "low", "medium", "high";
   --color-foreground: rgb(var(--base-foreground));
   --color-background: rgb(var(--base-background));
 
-  --opacity-color-minimum: 10%;
-  --opacity-color-low: 20%;
-  --opacity-color-medium: 30%;
-  --opacity-color-high: 60%;
+  --opacity-achromatic-multiplier: 0.5;
+  --opacity-color-minimum: 8%;
+  --opacity-color-low: 16%;
+  --opacity-color-medium: 25%;
+  --opacity-color-high: 50%;
 
   @each $color in $colors {
     --color-#{$color}: rgb(var(--base-#{$color}));
@@ -27,32 +28,19 @@ $opacity-levels: "minimum", "low", "medium", "high";
     @each $level in $opacity-levels {
       --color-#{$color}-#{$level}: color-mix(
         in srgb,
-        rgb(var(--base-#{$color})) var(--opacity-color-#{$level}),
+        var(--color-#{$color}) var(--opacity-color-#{$level}),
         var(--color-background)
       );
     }
   }
 
-  --color-shape-minimum: color-mix(
-    in srgb,
-    var(--color-foreground) calc(var(--opacity-color-minimum) / 2),
-    var(--color-background)
-  );
-  --color-shape-low: color-mix(
-    in srgb,
-    var(--color-foreground) calc(var(--opacity-color-low) / 2),
-    var(--color-background)
-  );
-  --color-shape-medium: color-mix(
-    in srgb,
-    var(--color-foreground) calc(var(--opacity-color-medium) / 2),
-    var(--color-background)
-  );
-  --color-shape-high: color-mix(
-    in srgb,
-    var(--color-foreground) calc(var(--opacity-color-high) / 2),
-    var(--color-background)
-  );
+  @each $level in $opacity-levels {
+    --color-shape-#{$level}: color-mix(
+      in srgb,
+      var(--color-foreground) calc(var(--opacity-color-#{$level}) * var(--opacity-achromatic-multiplier)),
+      var(--color-background)
+    );
+  }
 
   --color-primary: var(--color-blue);
   --color-primary-minimum: var(--color-blue-minimum);
@@ -77,6 +65,8 @@ $opacity-levels: "minimum", "low", "medium", "high";
   :root {
     --base-foreground: 236, 244, 247;
     --base-background: 9, 19, 28;
+
+    --opacity-achromatic-multiplier: 0.6;
   }
 }
 
@@ -89,9 +79,10 @@ button {
   display: inline-flex;
   vertical-align: middle;
   flex-direction: row;
-  gap: calc(var(--gap) / 2);
   justify-content: center;
   align-items: center;
+  gap: calc(var(--gap) / 2);
+
   font: inherit;
   font-weight: 600;
   border-radius: var(--radius);
@@ -99,13 +90,24 @@ button {
   border: none;
   color: inherit;
   cursor: pointer;
-  background: var(--color-shape-low);
   user-select: none;
   outline: none;
 
-  --hover-background: var(--color-shape-medium);
+  --opacity-multiplier: var(--opacity-achromatic-multiplier);
 
-  &:hover {
+  background: color-mix(
+    in srgb,
+    currentColor calc(var(--opacity-color-low) * var(--opacity-multiplier)),
+    var(--color-background)
+  );
+  --hover-background: color-mix(
+    in srgb,
+    currentColor calc(var(--opacity-color-medium) * var(--opacity-multiplier)),
+    var(--color-background)
+  );
+
+  &:hover,
+  &:focus-visible {
     background: var(--hover-background) !important;
   }
 
@@ -143,6 +145,7 @@ button {
   vertical-align: middle;
   flex-direction: row;
   align-items: center;
+  gap: calc(var(--gap) / 2);
 
   background: var(--color-shape-low);
   border-radius: var(--radius);
@@ -160,6 +163,10 @@ button {
 
   .dropdown-value {
     flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: calc(var(--gap) / 2);
     overflow: hidden;
     text-overflow: ellipsis;
   }
@@ -202,6 +209,7 @@ button {
   display: flex;
   flex-direction: row;
   align-items: center;
+  gap: calc(var(--gap) / 2);
   background: none;
   border-radius: var(--radius);
 
@@ -276,7 +284,7 @@ button {
       stroke-dashoffset: 0;
       animation: fillunfill-spinner 1.5s ease-in-out infinite;
       stroke-linecap: round;
-      stroke: var(--color-primary);
+      stroke: currentColor;
     }
   }
 }

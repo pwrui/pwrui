@@ -1,19 +1,12 @@
 import { HTMLProps, JSX, useEffect, useRef, useState } from "react";
 import { Icon } from "./Icon.js";
 
-function toggleClass(element: HTMLElement, className: string) {
-  if (element.classList.contains(className)) {
-    element.classList.remove(className);
-  } else {
-    element.classList.add(className);
-  }
-}
-
 export type DropdownOption = { value: string | number, label: JSX.Element | string };
 
 export function Dropdown({ options, value, setValue, selectDefaultValue = true, displayAsList = false, ref, ...props }: HTMLProps<HTMLDivElement> & Pick<HTMLProps<HTMLInputElement>, "ref"> & { options: DropdownOption[], value?: string | number, setValue: (value: string | number) => void, selectDefaultValue?: boolean, displayAsList?: boolean }): JSX.Element {
   const dropdown = useRef<HTMLDivElement>(null);
   const [inputValue, setInputValue] = useState<string | number | undefined>(value);
+  const [expanded, setExpanded] = useState(false);
   const hasInteracted = useRef(false);
 
   useEffect(() => {
@@ -32,7 +25,7 @@ export function Dropdown({ options, value, setValue, selectDefaultValue = true, 
   useEffect(() => {
     const listener = (event: MouseEvent) => {
       if (dropdown.current && !dropdown.current.contains(event.target as Node)) {
-        dropdown.current.classList.remove("expanded");
+        setExpanded(false);
       }
     };
     document.addEventListener("click", listener);
@@ -55,7 +48,7 @@ export function Dropdown({ options, value, setValue, selectDefaultValue = true, 
     <input type="hidden" value={inputValue} name={props.name} ref={ref} />
     {displayAsList
       ? list
-      : <div {...props} className="dropdown" ref={dropdown} onClick={() => dropdown.current && options.length ? toggleClass(dropdown.current, "expanded") : null}>
+      : <div {...props} className={`dropdown ${expanded ? "expanded" : ""}`} ref={dropdown} onClick={() => dropdown.current && options.length ? setExpanded(pre => !pre) : null}>
         <div className="dropdown-value">
           {options.length ? options.find(option => option.value == value)?.label : <i>No options</i>}
         </div>

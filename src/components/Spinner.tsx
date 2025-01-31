@@ -1,11 +1,17 @@
+import { HTMLAttributes, JSX, PropsWithChildren } from "react";
 import { Icon } from "./Icon.js";
 
-export function Spinner({ error, fullscreen = false, visible = true }: { error?: unknown, fullscreen?: boolean, visible?: boolean }) {
-	return <div className={`spinner ${visible ? "" : "hidden"} ${fullscreen ? "fullscreen" : ""}`}>
+
+export function Spinner({ children, className, error, fullscreen = false, style, visible = true, ...props }: PropsWithChildren<HTMLAttributes<HTMLDivElement> & { error?: unknown, fullscreen?: boolean, visible?: boolean }>): JSX.Element {
+	return <div
+		className={`spinner ${visible ? "" : "hidden"} ${fullscreen ? "fullscreen" : ""} ${className ?? ""}`}
+		style={error ? { ...style, color: "var(--color-red)" } : style}
+		{...props}
+	>
 		{error
 			? <>
-				<Icon style={{ color: "var(--color-red)" }} warning />
-				<span style={{ color: "var(--color-red)" }}>
+				<Icon warning />
+				<span>
 					Error
 				</span>
 			</>
