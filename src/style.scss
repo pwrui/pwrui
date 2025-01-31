@@ -17,10 +17,11 @@ $opacity-levels: "minimum", "low", "medium", "high";
   --color-background: rgb(var(--base-background));
 
   --opacity-achromatic-multiplier: 0.5;
-  --opacity-color-minimum: 8%;
-  --opacity-color-low: 16%;
-  --opacity-color-medium: 25%;
-  --opacity-color-high: 50%;
+  --opacity-color-minimum: 0.08;
+  --opacity-color-low: 0.16;
+  --opacity-color-medium: 0.25;
+  --opacity-color-high: 0.50;
+  --opacity-color-maximum: 0.70;
 
   @each $color in $colors {
     --color-#{$color}: rgb(var(--base-#{$color}));
@@ -28,7 +29,7 @@ $opacity-levels: "minimum", "low", "medium", "high";
     @each $level in $opacity-levels {
       --color-#{$color}-#{$level}: color-mix(
         in srgb,
-        var(--color-#{$color}) var(--opacity-color-#{$level}),
+        var(--color-#{$color}) calc(100% * var(--opacity-color-#{$level})),
         var(--color-background)
       );
     }
@@ -37,7 +38,7 @@ $opacity-levels: "minimum", "low", "medium", "high";
   @each $level in $opacity-levels {
     --color-shape-#{$level}: color-mix(
       in srgb,
-      var(--color-foreground) calc(var(--opacity-color-#{$level}) * var(--opacity-achromatic-multiplier)),
+      var(--color-foreground) calc(100% * var(--opacity-color-#{$level}) * var(--opacity-achromatic-multiplier)),
       var(--color-background)
     );
   }
@@ -97,12 +98,12 @@ button {
 
   background: color-mix(
     in srgb,
-    currentColor calc(var(--opacity-color-low) * var(--opacity-multiplier)),
+    currentColor calc(100% * var(--opacity-color-low) * var(--opacity-multiplier)),
     var(--color-background)
   );
   --hover-background: color-mix(
     in srgb,
-    currentColor calc(var(--opacity-color-medium) * var(--opacity-multiplier)),
+    currentColor calc(100% * var(--opacity-color-medium) * var(--opacity-multiplier)),
     var(--color-background)
   );
 

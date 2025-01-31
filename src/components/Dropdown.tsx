@@ -1,9 +1,9 @@
-import { HTMLProps, JSX, useEffect, useRef, useState } from "react";
+import { ComponentProps, JSX, useEffect, useRef, useState } from "react";
 import { Icon } from "./Icon.js";
 
 export type DropdownOption = { value: string | number, label: JSX.Element | string };
 
-export function Dropdown({ options, value, setValue, selectDefaultValue = true, displayAsList = false, ref, ...props }: HTMLProps<HTMLDivElement> & Pick<HTMLProps<HTMLInputElement>, "ref"> & { options: DropdownOption[], value?: string | number, setValue: (value: string | number) => void, selectDefaultValue?: boolean, displayAsList?: boolean }): JSX.Element {
+export function Dropdown({ options, value, setValue, selectDefaultValue = true, displayAsList = false, ref, ...props }: ComponentProps<"div"> & Pick<ComponentProps<"input">, "name" | "ref"> & { options: DropdownOption[], value?: string | number, setValue: (value: string | number) => void, selectDefaultValue?: boolean, displayAsList?: boolean }): JSX.Element {
   const dropdown = useRef<HTMLDivElement>(null);
   const [inputValue, setInputValue] = useState<string | number | undefined>(value);
   const [expanded, setExpanded] = useState(false);

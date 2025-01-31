@@ -1,8 +1,8 @@
-import { HTMLAttributes, JSX, PropsWithChildren } from "react";
+import { ComponentProps, JSX, PropsWithChildren } from "react";
 import { Icon } from "./Icon.js";
 
 
-export function Spinner({ children, className, error, fullscreen = false, style, visible = true, ...props }: PropsWithChildren<HTMLAttributes<HTMLDivElement> & { error?: unknown, fullscreen?: boolean, visible?: boolean }>): JSX.Element {
+export function Spinner({ children, className, error, fullscreen = false, style, visible = true, ...props }: PropsWithChildren<ComponentProps<"div"> & { error?: unknown, fullscreen?: boolean, visible?: boolean }>): JSX.Element {
 	return <div
 		className={`spinner ${visible ? "" : "hidden"} ${fullscreen ? "fullscreen" : ""} ${className ?? ""}`}
 		style={error ? { ...style, color: "var(--color-red)" } : style}
