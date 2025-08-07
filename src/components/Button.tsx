@@ -6,21 +6,23 @@ export function Button(props: PropsWithChildren<ComponentProps<"button"> & { onP
   return (
     <button
       onMouseDown={(event: MouseEvent<HTMLButtonElement>) => {
-        if (event.button === 0) {
+        if (event.button === 0 && onPress) {
           event.stopPropagation();
           setIgnorePress(true);
-          onPress?.(event);
+          onPress(event);
         }
       }}
       onMouseUp={() => {
 
       }}
       onClick={(event: MouseEvent<HTMLButtonElement>) => {
-        event.stopPropagation();
-        if (!ignorePress) {
-          onPress?.(event);
+        if (onPress) {
+          event.stopPropagation();
+          if (!ignorePress) {
+            onPress(event);
+          }
+          setIgnorePress(false);
         }
-        setIgnorePress(false);
       }}
       style={{
         ...(theme ? { color: theme, "--opacity-multiplier": 1 } : {}),
