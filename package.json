@@ -1,6 +1,6 @@
 {
   "name": "pwrui",
-  "version": "0.0.33",
+  "version": "0.0.34",
   "description": "A library for building interactive React apps.",
   "author": "wipmate",
   "keywords": [
@@ -29,12 +29,14 @@
     "url": "https://github.com/pwrui/pwrui.git"
   },
   "peerDependencies": {
-    "material-symbols": "^0.27.2",
+    "material-symbols": "^0.34.0",
     "react": "^19.0.0"
   },
   "devDependencies": {
     "@types/react": "^19.0.7",
+    "material-symbols": "^0.34.0",
     "sass": "^1.83.4",
     "typescript": "^5.7.3"
-  }
+  },
+  "packageManager": "pnpm@10.12.4+sha512.5ea8b0deed94ed68691c9bad4c955492705c5eeb8a87ef86bc62c74a26b037b08ff9570f108b2e4dbd1dd1a9186fea925e527f141c648e85af45631074680184"
 }
