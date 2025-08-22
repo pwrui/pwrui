@@ -1,5 +1,5 @@
 import { ComponentProps, JSX, MouseEvent, PropsWithChildren, useState } from "react";
-import { color, schemes } from "../style";
+import { COLOR, schemes } from "../style";
 
 export function Button(props: PropsWithChildren<ComponentProps<"button"> & { onPress?: (event?: MouseEvent<HTMLButtonElement>) => void, scheme?: keyof typeof schemes }>): JSX.Element {
   const { style, onPress, children, scheme, ...otherProps } = props;
@@ -26,8 +26,8 @@ export function Button(props: PropsWithChildren<ComponentProps<"button"> & { onP
     }}
     style={{
       ...(scheme ? {
-        color: color[`on${(scheme[0].toUpperCase() + scheme.substring(1)) as "Primary" | "Red" | "Green" | "Blue"}Container`],
-        "--idle-background": color[`${scheme}Container`],
+        color: COLOR[`on${(scheme[0].toUpperCase() + scheme.substring(1)) as "Primary" | "Red" | "Green" | "Blue"}Container`],
+        "--idle-background": COLOR[`${scheme}Container`],
         "--hover-background": `color-mix(in srgb, currentColor 8%, var(--idle-background))`,
         "--opacity-multiplier": 1,
       } : {}),
