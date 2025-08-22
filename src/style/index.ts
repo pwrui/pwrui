@@ -35,6 +35,4 @@ export const allColorNames = [...universalColorNames, ...primaryColorNames, ...d
 
 export const toKebapCase = (name: string) => name.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
 
-export const COLOR = Object.fromEntries(allColorNames.map(key => [key, `var(--color-${toKebapCase(key)})`])) as Record<typeof allColorNames[number], string>;
-
 export const primaryColorNameByDiscreteColor = (name: typeof discreteColorNames[number]) => primaryColorNames[discreteColorNames.indexOf(name) % primaryColorNames.length];

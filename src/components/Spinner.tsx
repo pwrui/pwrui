@@ -1,7 +1,7 @@
 import { ComponentProps, JSX, PropsWithChildren } from "react";
 
 import { Icon } from "./Icon.js";
-import { COLOR } from "../style/index.js";
+import { COLOR } from "../style/COLOR.js";
 
 export function Spinner({ children, className, error, fullscreen = false, style, visible = true, ...props }: PropsWithChildren<ComponentProps<"div"> & { error?: unknown, fullscreen?: boolean, visible?: boolean }>): JSX.Element {
 	return <div
