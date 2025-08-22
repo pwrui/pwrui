@@ -1,6 +1,8 @@
 import { CSSProperties, JSX, PropsWithChildren, useEffect, useState } from "react";
+
 import { Button } from "./Button.js";
 import { Icon } from "./Icon.js";
+import { color } from "../style/index.js";
 
 export function Checkbox({ children, style, value, onValueChange, setCheckedOnPress = false }: PropsWithChildren<{ style?: CSSProperties, value: boolean, onValueChange?: (newValue: boolean) => void, setCheckedOnPress?: boolean }>): JSX.Element {
   const [checked, setChecked] = useState(value);
@@ -20,7 +22,7 @@ export function Checkbox({ children, style, value, onValueChange, setCheckedOnPr
     style={{ ...style }}
     className="transparent"
   >
-    <Icon style={{ color: checked ? "var(--color-primary)" : "var(--color-shape-high)", height: "24px" }} icon={checked ? "check_box" : "check_box_outline_blank"} />
+    <Icon style={{ color: checked ? color.primary : color.outlineVariant, height: "24px" }} icon={checked ? "check_box" : "check_box_outline_blank"} />
     {children ?? null}
   </Button>;
 }

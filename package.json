@@ -1,6 +1,6 @@
 {
   "name": "pwrui",
-  "version": "0.0.35",
+  "version": "0.0.36",
   "description": "A library for building interactive React apps.",
   "author": "wipmate",
   "keywords": [
@@ -9,7 +9,7 @@
   ],
   "license": "MIT",
   "scripts": {
-    "build": "tsc && cp node_modules/material-symbols/*.woff2 dist/ && sass --style compressed --no-source-map -I node_modules --quiet-deps src/style.scss dist/style.css"
+    "build": "tsc && cp node_modules/material-symbols/*.woff2 dist/ && tsx src/style/color.build.ts && cp src/style/color.build.scss dist/color.scss && sass --style compressed --no-source-map -I node_modules --quiet-deps src/style/main.scss dist/style.css"
   },
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -22,7 +22,8 @@
       "import": "./dist/index.js",
       "require": "./dist/index.js"
     },
-    "./style.css": "./dist/style.css"
+    "./style.css": "./dist/style.css",
+    "./color": "./dist/color.scss"
   },
   "repository": {
     "type": "git",
@@ -33,9 +34,12 @@
     "react": "^19.0.0"
   },
   "devDependencies": {
+    "@ktibow/material-color-utilities-nightly": "^0.3.11755825625476",
+    "@types/node": "^24.3.0",
     "@types/react": "^19.0.7",
     "material-symbols": "^0.34.0",
     "sass": "^1.83.4",
+    "tsx": "^4.20.4",
     "typescript": "^5.7.3"
   },
   "packageManager": "pnpm@10.12.4+sha512.5ea8b0deed94ed68691c9bad4c955492705c5eeb8a87ef86bc62c74a26b037b08ff9570f108b2e4dbd1dd1a9186fea925e527f141c648e85af45631074680184"
