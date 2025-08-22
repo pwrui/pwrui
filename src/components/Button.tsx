@@ -1,5 +1,5 @@
 import { ComponentProps, JSX, MouseEvent, PropsWithChildren, useState } from "react";
-import { COLOR, schemes } from "../style";
+import { COLOR, schemes } from "../style/index.js";
 
 export function Button(props: PropsWithChildren<ComponentProps<"button"> & { onPress?: (event?: MouseEvent<HTMLButtonElement>) => void, scheme?: keyof typeof schemes }>): JSX.Element {
   const { style, onPress, children, scheme, ...otherProps } = props;
