@@ -2,7 +2,7 @@ import { JSX, useEffect, useState } from "react";
 import { Button } from "./Button.js";
 import { Icon } from "./Icon.js";
 
-export function ThemeSelector({ theme }: { theme?: "light" | "dark" }): JSX.Element {
+export function ThemeSelector({ label, theme }: { label?: React.FC<{ targetTheme: "light" | "dark" }>, theme?: "light" | "dark" }): JSX.Element {
   const [currentTheme, setCurrentTheme] = useState<"light" | "dark">("dark");
 
   useEffect(() => {
@@ -27,9 +27,10 @@ export function ThemeSelector({ theme }: { theme?: "light" | "dark" }): JSX.Elem
   }, [currentTheme]);
 
   const targetTheme = theme ?? getInverseTheme(currentTheme);
+  const Label = label ?? (({ targetTheme }) => <><Icon icon={`${targetTheme}_mode`} />View in {targetTheme} mode</>);
 
   return <Button onPress={() => setCurrentTheme(targetTheme)}>
-    <Icon icon={`${targetTheme}_mode`} /> View in {targetTheme} mode
+    <Label targetTheme={targetTheme} />
   </Button>;
 }
 
