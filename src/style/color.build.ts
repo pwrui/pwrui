@@ -1,8 +1,24 @@
 import { writeFileSync } from "fs";
 import { resolve } from "path";
-import { hexFromArgb, SchemeExpressive } from "@ktibow/material-color-utilities-nightly";
+import { argbFromHex, DynamicScheme, Hct, hexFromArgb, SchemeExpressive, Variant } from "@ktibow/material-color-utilities-nightly";
 
-import { allColorNames, primaryColorNames, schemes, toKebapCase, universalColorNames } from ".";
+import { allColorNames, primaryColorNames, Scheme, toKebapCase, universalColorNames } from "./index.js";
+
+const schemeDarkLight = (color: string) => {
+	const sourceColorHct = Hct.fromInt(argbFromHex(color));
+	return {
+		dark: new DynamicScheme({ sourceColorHct, variant: Variant.EXPRESSIVE, contrastLevel: 0, isDark: true, specVersion: "2025" }),
+		light: new DynamicScheme({ sourceColorHct, variant: Variant.EXPRESSIVE, contrastLevel: 0, isDark: false, specVersion: "2025" }),
+	};
+};
+
+export const schemes: Record<Scheme, ReturnType<typeof schemeDarkLight>> = {
+	primary: schemeDarkLight("#0085eb"),
+	red: schemeDarkLight("#e62832"),
+	green: schemeDarkLight("#00b43c"),
+	blue: schemeDarkLight("#0085eb"),
+	orange: schemeDarkLight("#d27814"),
+};
 
 const schemeToSass = (scheme: SchemeExpressive, color?: string) => {
 	return [...primaryColorNames, ...(color && color !== "primary" ? [] : universalColorNames)].map(name => `--color-${color ? toKebapCase(name as string).replace("primary", color) : toKebapCase(name as string)}: ${hexFromArgb(scheme[name])};`).join("\n  ");

@@ -2,7 +2,7 @@ import { CSSProperties, JSX, PropsWithChildren, useEffect, useState } from "reac
 
 import { Button } from "./Button.js";
 import { Icon } from "./Icon.js";
-import { COLOR } from "../style/COLOR.js";
+import { COLOR } from "../style/index.js";
 
 export function Checkbox({ children, style, value, onValueChange, setCheckedOnPress = false }: PropsWithChildren<{ style?: CSSProperties, value: boolean, onValueChange?: (newValue: boolean) => void, setCheckedOnPress?: boolean }>): JSX.Element {
   const [checked, setChecked] = useState(value);

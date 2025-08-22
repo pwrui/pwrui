@@ -7,6 +7,6 @@ export type { IconType } from "./components/Icon.js";
 export { Spinner } from "./components/Spinner.js";
 export { ThemeSelector } from "./components/ThemeSelector.js";
 
-export { COLOR } from "./style/COLOR.js";
+export { COLOR } from "./style/index.js";
 
 export default {};
