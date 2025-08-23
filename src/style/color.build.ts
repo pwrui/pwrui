@@ -2,7 +2,7 @@ import { writeFileSync } from "fs";
 import { resolve } from "path";
 import { argbFromHex, DynamicScheme, Hct, hexFromArgb, SchemeExpressive, Variant } from "@ktibow/material-color-utilities-nightly";
 
-import { allColorNames, primaryColorNames, Scheme, toKebapCase, universalColorNames } from "./index.js";
+import { allColorNames, schemeColorNames, Scheme, toKebapCase, universalColorNames } from "./index.js";
 
 const schemeDarkLight = (color: string) => {
 	const sourceColorHct = Hct.fromInt(argbFromHex(color));
@@ -14,14 +14,14 @@ const schemeDarkLight = (color: string) => {
 
 export const schemes: Record<Scheme, ReturnType<typeof schemeDarkLight>> = {
 	primary: schemeDarkLight("#0085eb"),
-	red: schemeDarkLight("#e62832"),
+	red: schemeDarkLight("#782424"),
 	green: schemeDarkLight("#00b43c"),
 	blue: schemeDarkLight("#0085eb"),
 	orange: schemeDarkLight("#d27814"),
 };
 
 const schemeToSass = (scheme: SchemeExpressive, color?: string) => {
-	return [...primaryColorNames, ...(color && color !== "primary" ? [] : universalColorNames)].map(name => `--color-${color ? toKebapCase(name as string).replace("primary", color) : toKebapCase(name as string)}: ${hexFromArgb(scheme[name])};`).join("\n  ");
+	return [...schemeColorNames, ...(color && color !== "primary" ? [] : universalColorNames)].map(name => `--color-${color ? toKebapCase(name as string).replace("primary", color) : toKebapCase(name as string)}: ${hexFromArgb(scheme[name])};`).join("\n  ");
 }
 
 const sass = `${allColorNames.map(name => toKebapCase(name)).map(name => `$color-${name}: var(--color-${name});`).join("\n")}

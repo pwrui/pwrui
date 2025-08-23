@@ -2,7 +2,7 @@ export const universalColorNames = [
 	"background", "onBackground", "surface", "surfaceDim", "surfaceBright", "surfaceContainerLowest", "surfaceContainerLow", "surfaceContainer", "surfaceContainerHigh", "surfaceContainerHighest", "onSurface", "surfaceVariant", "onSurfaceVariant", "inverseSurface", "inverseOnSurface", "outline", "outlineVariant", "shadow", "scrim", "surfaceTint", "error", "onError", "errorContainer", "onErrorContainer",
 ] as const;
 
-export const primaryColorNames = [
+export const schemeColorNames = [
 	"primary", "onPrimary", "primaryContainer", "onPrimaryContainer", "inversePrimary", "primaryFixed", "primaryFixedDim", "onPrimaryFixed", "onPrimaryFixedVariant",
 ] as const;
 
@@ -13,11 +13,9 @@ export const discreteColorNames = [
 	"orange", "onOrange", "orangeContainer", "onOrangeContainer", "inverseRed", "orangeFixed", "orangeFixedDim", "onRedFixed", "onRedFixedVariant",
 ] as const;
 
-export const allColorNames = [...universalColorNames, ...primaryColorNames, ...discreteColorNames] as const;
+export const allColorNames = [...universalColorNames, ...schemeColorNames, ...discreteColorNames] as const;
 
 export const toKebapCase = (name: string) => name.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
-
-export const primaryColorNameByDiscreteColor = (name: typeof discreteColorNames[number]) => primaryColorNames[discreteColorNames.indexOf(name) % primaryColorNames.length];
 
 export type Scheme = "primary" | "red" | "green" | "blue" | "orange";
 
