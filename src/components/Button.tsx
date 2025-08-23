@@ -1,7 +1,7 @@
-import { ComponentProps, JSX, MouseEvent, PropsWithChildren, useState } from "react";
+import { ComponentProps, MouseEvent, PropsWithChildren, ReactElement, useState } from "react";
 import { COLOR, Scheme } from "../style/index.js";
 
-export function Button(props: PropsWithChildren<ComponentProps<"button"> & { onPress?: (event?: MouseEvent<HTMLButtonElement>) => void, scheme?: Scheme }>): JSX.Element {
+export function Button(props: PropsWithChildren<ComponentProps<"button"> & { onPress?: (event?: MouseEvent<HTMLButtonElement>) => void, scheme?: Scheme }>): ReactElement {
   const { style, onPress, children, scheme, ...otherProps } = props;
   const [ignorePress, setIgnorePress] = useState(false);
   return <button

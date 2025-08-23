@@ -1,6 +1,6 @@
-import { ComponentProps, JSX, PropsWithChildren } from "react";
+import { ComponentProps, PropsWithChildren, ReactElement } from "react";
 
-export function Card({ children, className, ...props }: PropsWithChildren<ComponentProps<"div">>): JSX.Element {
+export function Card({ children, className, ...props }: PropsWithChildren<ComponentProps<"div">>): ReactElement {
   return <div className={`card ${className ?? ""}`} {...props}>
     {children}
   </div>;

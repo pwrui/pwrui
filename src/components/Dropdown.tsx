@@ -1,9 +1,33 @@
-import { ComponentProps, FormEvent, JSX, useEffect, useRef, useState } from "react";
+import { ComponentProps, FormEvent, ReactElement, useEffect, useRef, useState } from "react";
 import { Icon } from "./Icon.js";
 
-export type DropdownOption = { value: string | number, label: JSX.Element | string };
+type DropdownValue = string | number | boolean | object | null | undefined;
 
-export function Dropdown({ options, value, setValue, selectDefaultValue = true, captureInputs = false, displayAsList = false, ref, ...props }: ComponentProps<"div"> & Pick<ComponentProps<"input">, "name" | "ref"> & { options: DropdownOption[], value?: string | number, setValue: (value: string | number) => void, selectDefaultValue?: boolean, captureInputs?: boolean, displayAsList?: boolean }): JSX.Element {
+export type DropdownOption<Value extends DropdownValue> = {
+	value: Value;
+	label: ReactElement | string;
+};
+
+export function Dropdown<Value extends DropdownValue>({
+	options,
+	value,
+	setValue,
+	selectDefaultValue = true,
+	captureInputs = false,
+	displayAsList = false,
+	ref,
+	...props
+}: ComponentProps<"div">
+	& Pick<ComponentProps<"input">, "name" | "ref">
+	& {
+		options: DropdownOption<Value>[],
+		value?: Value,
+		setValue: (value: Value) => void,
+		selectDefaultValue?: boolean,
+		captureInputs?: boolean,
+		displayAsList?: boolean,
+	}
+): ReactElement {
 	const dropdown = useRef<HTMLDivElement>(null);
 	const [expanded, setExpanded] = useState(false);
 	const [filter, setFilter] = useState<string | undefined>();
@@ -39,7 +63,7 @@ export function Dropdown({ options, value, setValue, selectDefaultValue = true, 
 	const list = <div className="dropdown-list" style={{ maxHeight: displayAsList ? undefined : 220 }}>
 		<div {...(displayAsList ? props : {})}>
 			{options.length ? options.filter(option => !filter || (typeof option.value !== "string" || filter.split(" ").every(needle => (option.value as string).includes(needle)))).map(option => <div
-				key={option.value}
+				key={option.value?.toString()}
 				className={"dropdown-item" + (option.value == value ? " active" : "")}
 				{...{
 					[captureInputs ? "onClickCapture" : "onClick"]: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -56,7 +80,7 @@ export function Dropdown({ options, value, setValue, selectDefaultValue = true, 
 	</div>;
 
 	return <>
-		<input type="hidden" value={value} name={props.name} ref={ref} />
+		<input type="hidden" value={value?.toString()} name={props.name} ref={ref} />
 		{displayAsList
 			? list
 			: <div {...props} className={`dropdown ${expanded ? "expanded" : ""}`} ref={dropdown} {...{

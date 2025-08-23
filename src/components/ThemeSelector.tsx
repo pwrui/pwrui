@@ -1,8 +1,8 @@
-import { JSX, useEffect, useState } from "react";
+import { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { Button } from "./Button.js";
 import { Icon } from "./Icon.js";
 
-export function ThemeSelector({ label, theme }: { label?: React.FC<{ targetTheme: "light" | "dark" }>, theme?: "light" | "dark" }): JSX.Element {
+export function ThemeSelector({ label, theme }: { label?: FunctionComponent<{ targetTheme: "light" | "dark" }>, theme?: "light" | "dark" }): ReactElement {
   const [currentTheme, setCurrentTheme] = useState<"light" | "dark">("dark");
 
   useEffect(() => {
