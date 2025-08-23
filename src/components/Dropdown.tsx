@@ -20,7 +20,7 @@ export function Dropdown<Value extends DropdownValue>({
 }: ComponentProps<"div">
 	& Pick<ComponentProps<"input">, "name" | "ref">
 	& {
-		options: DropdownOption<Value>[],
+		options: readonly DropdownOption<Value>[],
 		value?: Value,
 		setValue: (value: Value) => void,
 		selectDefaultValue?: boolean,
