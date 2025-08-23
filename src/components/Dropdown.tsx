@@ -15,6 +15,7 @@ export function Dropdown<Value extends DropdownValue>({
 	selectDefaultValue = true,
 	captureInputs = false,
 	displayAsList = false,
+	listDirection = "column",
 	ref,
 	...props
 }: ComponentProps<"div">
@@ -26,6 +27,7 @@ export function Dropdown<Value extends DropdownValue>({
 		selectDefaultValue?: boolean,
 		captureInputs?: boolean,
 		displayAsList?: boolean,
+		listDirection?: "row" | "column",
 	}
 ): ReactElement {
 	const dropdown = useRef<HTMLDivElement>(null);
@@ -60,7 +62,7 @@ export function Dropdown<Value extends DropdownValue>({
 		};
 	}, [expanded, filter, setExpanded]);
 
-	const list = <div className="dropdown-list" style={{ maxHeight: displayAsList ? undefined : 220 }}>
+	const list = <div className={`dropdown-list dropdown-list-${listDirection}`} style={{ maxHeight: displayAsList ? undefined : 220 }}>
 		<div {...(displayAsList ? props : {})}>
 			{options.length ? options.filter(option => !filter || (typeof option.value !== "string" || filter.split(" ").every(needle => (option.value as string).includes(needle)))).map(option => <div
 				key={option.value?.toString()}
@@ -83,7 +85,7 @@ export function Dropdown<Value extends DropdownValue>({
 		<input type="hidden" value={value?.toString()} name={props.name} ref={ref} />
 		{displayAsList
 			? list
-			: <div {...props} className={`dropdown ${expanded ? "expanded" : ""}`} ref={dropdown} {...{
+			: <div {...props} className={`dropdown ${expanded ? "dropdown-expanded" : ""}`} ref={dropdown} {...{
 				[captureInputs ? "onClickCapture" : "onClick"]: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
 					if (captureInputs && !(event.target instanceof HTMLDivElement && event.target.classList.contains("dropdown-item"))) {
 						event.stopPropagation();

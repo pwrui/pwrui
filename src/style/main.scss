@@ -104,11 +104,11 @@ button {
   -webkit-tap-highlight-color: transparent;
   position: relative;
 
-  &.expanded {
+  &.dropdown-expanded {
     border-radius: $radius $radius 0 0;
   }
 
-  &:not(.expanded):hover {
+  &:not(.dropdown-expanded):hover {
     background: $color-surface-container;
   }
 
@@ -143,8 +143,23 @@ button {
   overflow-y: auto;
 
   & > div {
+    display: flex;
+    flex-direction: column;
     border-radius: inherit;
     background: inherit;
+  }
+
+  &.dropdown-list-row {
+    background: none;
+
+    & > div {
+      flex-direction: row;
+      gap: $gap;
+
+      .dropdown-item {
+        justify-content: center;
+      }
+    }
   }
 }
 
@@ -157,7 +172,7 @@ button {
   border-top-right-radius: 0;
 }
 
-.dropdown:not(.expanded) .dropdown-list {
+.dropdown:not(.dropdown-expanded) .dropdown-list {
   display: none;
 }
 
@@ -168,8 +183,9 @@ button {
   display: flex;
   flex-direction: row;
   align-items: center;
+  flex: 1;
   gap: calc($gap / 2);
-  background: none;
+  background: $color-surface-container-low;
   border-radius: $radius;
 
   &.active {
