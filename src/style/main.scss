@@ -120,6 +120,14 @@ button {
     gap: calc($gap / 2);
     overflow: hidden;
     text-overflow: ellipsis;
+
+    input {
+      padding: 0;
+      color: inherit;
+      outline: none;
+      border: none;
+      border-radius: 0;
+    }
   }
 
   .dropdown-icon {

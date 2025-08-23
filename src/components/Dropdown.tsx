@@ -6,6 +6,7 @@ export type DropdownOption = { value: string | number, label: JSX.Element | stri
 export function Dropdown({ options, value, setValue, selectDefaultValue = true, displayAsList = false, ref, ...props }: ComponentProps<"div"> & Pick<ComponentProps<"input">, "name" | "ref"> & { options: DropdownOption[], value?: string | number, setValue: (value: string | number) => void, selectDefaultValue?: boolean, displayAsList?: boolean }): JSX.Element {
   const dropdown = useRef<HTMLDivElement>(null);
   const [expanded, setExpanded] = useState(false);
+  const [filter, setFilter] = useState<string | undefined>();
 
   useEffect(() => {
     if (selectDefaultValue && options.length && !options.some(option => option.value === value)) {
@@ -14,18 +15,30 @@ export function Dropdown({ options, value, setValue, selectDefaultValue = true, 
   }, [options, setValue]);
 
   useEffect(() => {
-    const listener = (event: MouseEvent) => {
+    if (!expanded) {
+      setFilter(undefined);
+    }
+    const keydownListener = (event: KeyboardEvent) => {
+      if (expanded && !filter && /^[a-zA-Z0-9_ ]$/.test(event.key)) {
+        setFilter("");
+      }
+    };
+    const clickListener = (event: MouseEvent) => {
       if (dropdown.current && !dropdown.current.contains(event.target as Node)) {
         setExpanded(false);
       }
     };
-    document.addEventListener("click", listener);
-    return () => document.removeEventListener("click", listener);
-  }, [setExpanded]);
+    document.addEventListener("keydown", keydownListener);
+    document.addEventListener("click", clickListener);
+    return () => {
+      document.removeEventListener("keydown", keydownListener);
+      document.removeEventListener("click", clickListener);
+    };
+  }, [expanded, filter, setExpanded]);
 
   const list = <div className="dropdown-list" style={{ maxHeight: displayAsList ? undefined : 220 }}>
     <div {...(displayAsList ? props : {})}>
-      {options.length ? options.map(option => <div
+      {options.length ? options.filter(option => !filter || (typeof option.value !== "string" || filter.split(" ").every(needle => (option.value as string).includes(needle)))).map(option => <div
         key={option.value}
         className={"dropdown-item" + (option.value == value ? " active" : "")}
         onClick={() => setValue(option.value)}
@@ -41,9 +54,11 @@ export function Dropdown({ options, value, setValue, selectDefaultValue = true, 
       ? list
       : <div {...props} className={`dropdown ${expanded ? "expanded" : ""}`} ref={dropdown} onClick={() => dropdown.current && options.length ? setExpanded(pre => !pre) : null}>
         <div className="dropdown-value">
-          {options.length ? options.find(option => option.value == value)?.label : <i>No options</i>}
+          {options.length ? (
+            filter === undefined ? options.find(option => option.value == value)?.label : <><Icon filter_list /><input type="text" autoFocus spellCheck={false} value={filter} onInput={event => setFilter(event.currentTarget.value)} /></>
+          ) : <i>No options</i>}
         </div>
-        <Icon keyboard_arrow_down className="dropdown-icon" />
+        <Icon icon={`keyboard_arrow_${expanded ? "up" : "down"}`} className="dropdown-icon" />
         {list}
       </div>
     }
