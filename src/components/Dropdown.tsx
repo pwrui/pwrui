@@ -43,7 +43,6 @@ export function Dropdown({ options, value, setValue, selectDefaultValue = true, 
 				className={"dropdown-item" + (option.value == value ? " active" : "")}
 				{...{
 					[captureInputs ? "onClickCapture" : "onClick"]: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-						console.log("captured item");
 						if (captureInputs) {
 							event.stopPropagation();
 						}
@@ -62,7 +61,6 @@ export function Dropdown({ options, value, setValue, selectDefaultValue = true, 
 			? list
 			: <div {...props} className={`dropdown ${expanded ? "expanded" : ""}`} ref={dropdown} {...{
 				[captureInputs ? "onClickCapture" : "onClick"]: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-					console.log("captured dropdown");
 					if (captureInputs && !(event.target instanceof HTMLDivElement && event.target.classList.contains("dropdown-item"))) {
 						event.stopPropagation();
 					}
