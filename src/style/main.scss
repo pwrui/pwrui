@@ -165,11 +165,15 @@ button {
 
 .dropdown .dropdown-list {
   position: absolute;
+  max-height: 220px;
   top: 100%;
   left: 0;
   z-index: 1;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
+  & > div {
+    gap: 0;
+  }
 }
 
 .dropdown:not(.dropdown-expanded) .dropdown-list {

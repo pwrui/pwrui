@@ -64,7 +64,7 @@ export function Dropdown<Value extends DropdownValue>({
 		};
 	}, [expanded, filter, setExpanded]);
 
-	const list = <div className={`dropdown-list dropdown-list-${listDirection}`} style={{ maxHeight: displayAsList ? undefined : 220 }}>
+	const list = <div className={`dropdown-list dropdown-list-${listDirection}`}>
 		<div {...(displayAsList ? props : {})}>
 			{options.length ? options.filter(option => !filter || (typeof option.value !== "string" || filter.split(" ").every(needle => (option.value as string).includes(needle)))).map(option => <div
 				key={option.value?.toString()}
