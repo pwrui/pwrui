@@ -14,6 +14,7 @@ export function Dropdown<Value extends DropdownValue>({
 	setValue,
 	selectDefaultValue = true,
 	captureInputs = false,
+	defaultExpanded = false,
 	displayAsList = false,
 	listDirection = "column",
 	ref,
@@ -26,12 +27,13 @@ export function Dropdown<Value extends DropdownValue>({
 		setValue: (value: Value) => void,
 		selectDefaultValue?: boolean,
 		captureInputs?: boolean,
+		defaultExpanded?: boolean,
 		displayAsList?: boolean,
 		listDirection?: "row" | "column",
 	}
 ): ReactElement {
 	const dropdown = useRef<HTMLDivElement>(null);
-	const [expanded, setExpanded] = useState(false);
+	const [expanded, setExpanded] = useState(defaultExpanded);
 	const [filter, setFilter] = useState<string | undefined>();
 
 	useEffect(() => {
