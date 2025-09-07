@@ -9,6 +9,7 @@ export type DropdownOption<Value extends DropdownValue> = {
 };
 
 export function Dropdown<Value extends DropdownValue>({
+	name,
 	options,
 	value,
 	setValue,
@@ -84,7 +85,7 @@ export function Dropdown<Value extends DropdownValue>({
 	</div>;
 
 	return <>
-		<input type="hidden" value={value?.toString()} name={props.name} ref={ref} />
+		<input type="hidden" readOnly value={value?.toString()} name={name} ref={ref} />
 		{displayAsList
 			? list
 			: <div {...props} className={`dropdown ${expanded ? "dropdown-expanded" : ""}`} ref={dropdown} {...{
