@@ -2,7 +2,7 @@ import { FC, ReactElement, useEffect, useState } from "react";
 import { Button } from "./Button.js";
 import { Icon } from "./Icon.js";
 
-export function ThemeSelector({ label, theme, ...props }: Omit<Parameters<typeof Button>, "children" | "onPress"> & { label?: FC<{ targetTheme: "light" | "dark", }>, theme?: "light" | "dark" }): ReactElement {
+export function ThemeSelector({ label, theme, ...props }: Omit<Parameters<typeof Button>[0], "children" | "onPress"> & { label?: FC<{ targetTheme: "light" | "dark", }>, theme?: "light" | "dark" }): ReactElement {
   const [currentTheme, setCurrentTheme] = useState<"light" | "dark">("dark");
 
   useEffect(() => {
