@@ -1,8 +1,8 @@
-import { FunctionComponent, ReactElement, useEffect, useState } from "react";
+import { FC, ReactElement, useEffect, useState } from "react";
 import { Button } from "./Button.js";
 import { Icon } from "./Icon.js";
 
-export function ThemeSelector({ label, theme }: { label?: FunctionComponent<{ targetTheme: "light" | "dark" }>, theme?: "light" | "dark" }): ReactElement {
+export function ThemeSelector({ label, theme, ...props }: Omit<Parameters<typeof Button>, "children" | "onPress"> & { label?: FC<{ targetTheme: "light" | "dark", }>, theme?: "light" | "dark" }): ReactElement {
   const [currentTheme, setCurrentTheme] = useState<"light" | "dark">("dark");
 
   useEffect(() => {
@@ -29,7 +29,7 @@ export function ThemeSelector({ label, theme }: { label?: FunctionComponent<{ ta
   const targetTheme = theme ?? getInverseTheme(currentTheme);
   const Label = label ?? (({ targetTheme }) => <><Icon icon={`${targetTheme}_mode`} />View in {targetTheme} mode</>);
 
-  return <Button onPress={() => setCurrentTheme(targetTheme)}>
+  return <Button onPress={() => setCurrentTheme(targetTheme)} {...props}>
     <Label targetTheme={targetTheme} />
   </Button>;
 }

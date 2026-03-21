@@ -32,7 +32,6 @@ export function Checkbox({
       isInitialRender.current = false;
       return;
     }
-    console.log("useEffect", name, "setChecked", uncontrolledChecked);
     setChecked?.(uncontrolledChecked);
   }, [setChecked, uncontrolledChecked]);
 
