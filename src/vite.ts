@@ -11,9 +11,9 @@ const RESOLVED_VIRTUAL_MODULE_ID = "\0" + VIRTUAL_MODULE_ID;
 
 let globalFontPromise: Promise<string> | null = null;
 
-const fetchFontDataUri = async (extraIcons?: IconType[]): Promise<string> => {
-  const icons = new Set<string>(extraIcons || []);
-  const files = readdirSync("app", { recursive: true, withFileTypes: true })
+const fetchFontDataUri = async (srcDir: string, extraIcons: IconType[]): Promise<string> => {
+  const icons = new Set<string>(extraIcons);
+  const files = readdirSync(srcDir, { recursive: true, withFileTypes: true })
     .filter(entry => entry.isFile() && /\.[jt]sx?$/.test(entry.name))
     .map(entry => join(entry.parentPath, entry.name));
 
@@ -50,7 +50,7 @@ const fetchFontDataUri = async (extraIcons?: IconType[]): Promise<string> => {
   }
 };
 
-export function pwruiVitePlugin({ extraIcons }: { extraIcons?: IconType[] } = {}): Plugin {
+export function pwruiVitePlugin({ srcDir, extraIcons }: { srcDir?: string, extraIcons?: IconType[] } = {}): Plugin {
   let isSSR = false;
 
   return {
@@ -66,7 +66,7 @@ export function pwruiVitePlugin({ extraIcons }: { extraIcons?: IconType[] } = {}
         }
 
         if (!globalFontPromise) {
-          globalFontPromise = fetchFontDataUri(extraIcons);
+          globalFontPromise = fetchFontDataUri(srcDir || "app", extraIcons || []);
         }
 
         const base64 = await globalFontPromise;
