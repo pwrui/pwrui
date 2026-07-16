@@ -1,4 +1,5 @@
 *.build.scss
+.DS_Store
 .env
 dist/
 node_modules/
