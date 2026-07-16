@@ -1,6 +1,6 @@
 {
   "name": "pwrui",
-  "version": "0.0.55",
+  "version": "0.0.56",
   "description": "A library for building interactive React apps.",
   "author": "wipmate",
   "keywords": [
@@ -20,7 +20,11 @@
   "exports": {
     ".": {
       "import": "./dist/index.js",
-      "require": "./dist/index.js"
+      "types": "./dist/index.d.ts"
+    },
+    "./vite": {
+      "import": "./dist/vite.js",
+      "types": "./dist/vite.d.ts"
     },
     "./color": "./dist/color.scss",
     "./style.css": "./dist/style.css",
