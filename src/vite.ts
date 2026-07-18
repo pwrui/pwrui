@@ -6,7 +6,7 @@ import { IconType } from "pwrui";
 const CSS_URL_BASE = "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0";
 const UA = "Mozilla/5.0 AppleWebKit/500 Chrome/100";
 
-const VIRTUAL_MODULE_ID = "pwrui/symbols.css";
+const VIRTUAL_MODULE_ID = "pwrui/symbols-dynamic.css";
 const RESOLVED_VIRTUAL_MODULE_ID = "\0" + VIRTUAL_MODULE_ID;
 
 let globalFontPromise: Promise<string> | null = null;
