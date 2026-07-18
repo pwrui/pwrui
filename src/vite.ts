@@ -85,7 +85,6 @@ export function pwruiVitePlugin({ srcDir, extraIcons }: { srcDir?: string, extra
           }
 
           .material-symbols-outlined {
-            font-size: 24px;
             font-family: "Material Symbols Outlined";
             font-weight: normal;
             font-style: normal;
