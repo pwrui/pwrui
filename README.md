@@ -22,10 +22,11 @@ yarn add pwrui
 
 ## Usage
 
-Import the following stylesheet in your main JS file:
+Import the following stylesheets in your main JS file:
 
 ```js
 import "pwrui/style.css";
+import "pwrui/symbols-static.css";
 ```
 
 The library currently provides the following components:

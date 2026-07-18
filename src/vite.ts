@@ -6,7 +6,7 @@ import { IconType } from "pwrui";
 const CSS_URL_BASE = "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0";
 const UA = "Mozilla/5.0 AppleWebKit/500 Chrome/100";
 
-const VIRTUAL_MODULE_ID = "virtual:material-symbols.css";
+const VIRTUAL_MODULE_ID = "pwrui/symbols.css";
 const RESOLVED_VIRTUAL_MODULE_ID = "\0" + VIRTUAL_MODULE_ID;
 
 let globalFontPromise: Promise<string> | null = null;
@@ -81,6 +81,25 @@ export function pwruiVitePlugin({ srcDir, extraIcons }: { srcDir?: string, extra
             font-style: normal;
             font-weight: 400;
             src: url('data:font/woff2;charset=utf-8;base64,${base64}') format('woff2');
+          }
+
+          .material-symbols-outlined {
+            font-size: 24px;
+            font-family: "Material Symbols Outlined";
+            font-weight: normal;
+            font-style: normal;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            vertical-align: middle;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+            font-feature-settings: "liga";
           }
         `;
       }

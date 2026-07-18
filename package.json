@@ -1,6 +1,6 @@
 {
   "name": "pwrui",
-  "version": "0.0.57",
+  "version": "0.0.58",
   "description": "A library for building interactive React apps.",
   "author": "wipmate",
   "keywords": [
@@ -9,7 +9,7 @@
   ],
   "license": "MIT",
   "scripts": {
-    "build": "tsc && cp node_modules/material-symbols/*.woff2 dist/ && tsx src/style/color.build.ts && cp src/style/color.build.scss dist/color.scss && sass --style compressed --no-source-map -I node_modules --quiet-deps src/style/main.scss dist/style.css && sass --style compressed --no-source-map -I node_modules --quiet-deps src/style/symbols.scss dist/symbols.css"
+    "build": "tsc && cp node_modules/material-symbols/*.woff2 dist/ && tsx src/style/color.build.ts && cp src/style/color.build.scss dist/color.scss && cp src/style/symbols-dynamic.css dist/symbols-dynamic.css && sass --style compressed --no-source-map -I node_modules --quiet-deps src/style/main.scss dist/style.css && sass --style compressed --no-source-map -I node_modules --quiet-deps src/style/symbols-static.scss dist/symbols-static.css"
   },
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -22,13 +22,14 @@
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
+    "./color": "./dist/color.scss",
+    "./style.css": "./dist/style.css",
+    "./symbols-dynamic.css": "./dist/symbols-dynamic.css",
+    "./symbols-static.css": "./dist/symbols-static.css",
     "./vite": {
       "import": "./dist/vite.js",
       "types": "./dist/vite.d.ts"
-    },
-    "./color": "./dist/color.scss",
-    "./style.css": "./dist/style.css",
-    "./symbols.css": "./dist/symbols.css"
+    }
   },
   "repository": {
     "type": "git",
@@ -52,5 +53,5 @@
     "typescript": "^5.7.3",
     "vite": "^8.1.5"
   },
-  "packageManager": "pnpm@10.12.4+sha512.5ea8b0deed94ed68691c9bad4c955492705c5eeb8a87ef86bc62c74a26b037b08ff9570f108b2e4dbd1dd1a9186fea925e527f141c648e85af45631074680184"
+  "packageManager": "pnpm@11.14.0+sha512.66c1ac4c7d4762d6d7dde44c7f3e5a73591ed0a0806e751d4ed32d4f004f25b2285a906b1fd8a9e3e621df3b4e2858bf88e50e0cf626bedbe977fe434a5caf85"
 }
