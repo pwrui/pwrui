@@ -222,6 +222,7 @@ button {
     opacity 0.05s ease,
     visibility 0.05s ease;
   display: inline-flex;
+  vertical-align: middle;
   flex-direction: column;
   justify-content: center;
   gap: $gap;
