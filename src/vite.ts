@@ -55,6 +55,7 @@ export function pwruiVitePlugin({ srcDir, extraIcons }: { srcDir?: string, extra
 
   return {
     name: "pwrui",
+    enforce: "pre",
     configResolved: config => {
       isSSR = !!config.build.ssr;
     },
