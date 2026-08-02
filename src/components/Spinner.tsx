@@ -1,9 +1,9 @@
-import { ComponentProps, PropsWithChildren, ReactElement } from "react";
+import { ComponentProps, PropsWithChildren, ReactElement, ReactNode } from "react";
 
 import { Icon } from "./Icon.js";
 import { COLOR } from "../style/index.js";
 
-export function Spinner({ children, className, error, fullscreen = false, style, visible = true, ...props }: PropsWithChildren<ComponentProps<"div"> & { error?: unknown, fullscreen?: boolean, visible?: boolean }>): ReactElement {
+export function Spinner({ children, className, error, fullscreen = false, style, visible = true, ...props }: PropsWithChildren<ComponentProps<"div"> & { error?: ReactNode, fullscreen?: boolean, visible?: boolean }>): ReactElement {
 	return <div
 		className={`spinner ${visible ? "" : "hidden"} ${fullscreen ? "fullscreen" : ""} ${className ?? ""}`}
 		style={error ? { ...style, color: COLOR.error } : style}
@@ -13,7 +13,7 @@ export function Spinner({ children, className, error, fullscreen = false, style,
 			? <>
 				<Icon warning />
 				<span>
-					Error
+					{error}
 				</span>
 			</>
 			: <svg xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="0 0 48 48">

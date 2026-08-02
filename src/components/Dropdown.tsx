@@ -1,11 +1,11 @@
-import { ComponentProps, FormEvent, ReactElement, useEffect, useRef, useState } from "react";
+import { ComponentProps, FormEvent, ReactElement, ReactNode, useEffect, useRef, useState } from "react";
 import { Icon } from "./Icon.js";
 
 type DropdownValue = string | number | boolean | object | null | undefined;
 
 export type DropdownOption<Value extends DropdownValue> = {
 	value: Value;
-	label: ReactElement | string;
+	label: ReactNode;
 };
 
 export function Dropdown<Value extends DropdownValue>({
