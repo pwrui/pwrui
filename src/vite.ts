@@ -37,17 +37,24 @@ const fetchFontDataUri = async (srcDir: string, extraIcons: IconType[]): Promise
   const sorted = [...icons].sort();
   console.log(`[pwrui] Generating material symbols font with ${sorted.length} icons.`);
 
-  try {
-    const css = await fetch(`${CSS_URL_BASE}&icon_names=${sorted.join(",")}`, { headers: { "User-Agent": UA } }).then(r => r.text());
-    const match = css.match(/url\((https:\/\/fonts\.gstatic\.com\/[^)]+)\)\s*format\(['"]woff2['"]\)/);
-    if (!match) throw new Error("No woff2 URL found in retrieved CSS.");
-
-    const fontBuffer = await fetch(match[1]).then(r => r.arrayBuffer());
-    return Buffer.from(fontBuffer).toString("base64");
-  } catch (error) {
-    console.error("[pwrui] Material symbols font generation failed:", error);
-    return "";
+  const cssRes = await fetch(`${CSS_URL_BASE}&icon_names=${sorted.join(",")}`, { headers: { "User-Agent": UA } });
+  if (!cssRes.ok) {
+    throw new Error(`Failed to fetch Material Symbols CSS (${cssRes.status} ${cssRes.statusText})`);
   }
+
+  const css = await cssRes.text();
+  const match = css.match(/url\((https:\/\/fonts\.gstatic\.com\/[^)]+)\)\s*format\(['"]woff2['"]\)/);
+  if (!match) {
+    throw new Error("No woff2 URL found in retrieved Google Fonts CSS.");
+  }
+
+  const fontRes = await fetch(match[1]);
+  if (!fontRes.ok) {
+    throw new Error(`Failed to fetch woff2 font file (${fontRes.status} ${fontRes.statusText})`);
+  }
+
+  const fontBuffer = await fontRes.arrayBuffer();
+  return Buffer.from(fontBuffer).toString("base64");
 };
 
 export function pwruiVitePlugin({ srcDir, extraIcons }: { srcDir?: string, extraIcons?: IconType[] } = {}): Plugin {
@@ -70,13 +77,14 @@ export function pwruiVitePlugin({ srcDir, extraIcons }: { srcDir?: string, extra
           globalFontPromise = fetchFontDataUri(srcDir || "app", extraIcons || []);
         }
 
-        const base64 = await globalFontPromise;
+        try {
+          const base64 = await globalFontPromise;
 
-        if (!base64) {
-          return `/* [pwrui] No material symbols usage found or generation failed */`;
-        }
+          if (!base64) {
+            return `/* [pwrui] No material symbols usage found */`;
+          }
 
-        return `
+          return `
           @font-face {
             font-family: 'Material Symbols Outlined';
             font-style: normal;
@@ -102,6 +110,10 @@ export function pwruiVitePlugin({ srcDir, extraIcons }: { srcDir?: string, extra
             font-feature-settings: "liga";
           }
         `;
+        } catch (error) {
+          globalFontPromise = null;
+          throw new Error(`[pwrui] Material symbols font generation failed: ${error instanceof Error ? error.message : String(error)}`);
+        }
       }
       return null;
     }
