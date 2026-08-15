@@ -1,4 +1,4 @@
-import { ComponentProps, FormEvent, ReactElement, ReactNode, useEffect, useRef, useState } from "react";
+import { ComponentProps, FormEvent, ReactElement, ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { Icon } from "./Icon.js";
 
 type DropdownValue = string | number | boolean | object | null | undefined;
@@ -16,8 +16,10 @@ export function Dropdown<Value extends DropdownValue>({
 	selectDefaultValue = true,
 	captureInputs = false,
 	defaultExpanded = false,
+	defaultFilter = undefined,
 	displayAsList = false,
 	listDirection = "column",
+	noOptionsMessage = "No options",
 	ref,
 	...props
 }: ComponentProps<"div">
@@ -29,13 +31,16 @@ export function Dropdown<Value extends DropdownValue>({
 		selectDefaultValue?: boolean,
 		captureInputs?: boolean,
 		defaultExpanded?: boolean,
+		defaultFilter?: string,
 		displayAsList?: boolean,
 		listDirection?: "row" | "column",
+		noOptionsMessage?: string,
 	}
 ): ReactElement {
 	const dropdown = useRef<HTMLDivElement>(null);
+	const listRef = useRef<HTMLDivElement>(null);
 	const [expanded, setExpanded] = useState(defaultExpanded);
-	const [filter, setFilter] = useState<string | undefined>();
+	const [filter, setFilter] = useState<string | undefined>(defaultFilter);
 
 	useEffect(() => {
 		if (selectDefaultValue && options.length && !options.some(option => option.value === value)) {
@@ -44,8 +49,17 @@ export function Dropdown<Value extends DropdownValue>({
 	}, [options, setValue]);
 
 	useEffect(() => {
+    if (expanded && listRef.current) {
+      const activeItem = listRef.current.querySelector<HTMLElement>(".dropdown-item.active");
+      if (activeItem) {
+        activeItem.scrollIntoView({ block: "nearest" });
+      }
+    }
+  }, [expanded]);
+
+	useEffect(() => {
 		if (!expanded) {
-			setFilter(undefined);
+			setFilter(defaultFilter);
 		}
 		const keydownListener = (event: KeyboardEvent) => {
 			if (expanded && !filter && /^[a-zA-Z0-9_ ]$/.test(event.key)) {
@@ -65,9 +79,27 @@ export function Dropdown<Value extends DropdownValue>({
 		};
 	}, [expanded, filter, setExpanded]);
 
-	const list = <div className={`dropdown-list dropdown-list-${listDirection}`}>
+	const filteredOptions = useMemo(() => {
+    if (!filter) return options;
+
+    const needles = filter.toLocaleLowerCase().split(" ");
+
+    return options.filter(option => {
+      const labelIsString = typeof option.label === "string";
+      const valueIsString = typeof option.value === "string";
+
+      if (!labelIsString && !valueIsString) {
+        return true;
+      }
+
+      const targetText = (labelIsString ? (option.label as string) : (option.value as string)).toLocaleLowerCase();
+      return needles.every(needle => targetText.includes(needle));
+    });
+  }, [options, filter]);
+
+	const list = <div className={`dropdown-list dropdown-list-${listDirection}`} ref={listRef}>
 		<div {...(displayAsList ? props : {})}>
-			{options.length ? options.filter(option => !filter || ((typeof option.label !== "string" && typeof option.value !== "string") || filter.toLocaleLowerCase().split(" ").every(needle => (typeof option.label === "string" ? option.label : option.value as string).toLocaleLowerCase().includes(needle)))).map(option => <div
+			{filteredOptions.length ? filteredOptions.map(option => <div
 				key={option.value?.toString()}
 				className={"dropdown-item" + (option.value == value ? " active" : "")}
 				{...{
@@ -80,7 +112,7 @@ export function Dropdown<Value extends DropdownValue>({
 				}}
 			>
 				{option.label}
-			</div>) : <div className="dropdown-item">No options available</div>}
+			</div>) : <div className="dropdown-item">{noOptionsMessage}</div>}
 		</div>
 	</div>;
 
@@ -100,7 +132,7 @@ export function Dropdown<Value extends DropdownValue>({
 			}}>
 				<div className="dropdown-value">
 					{options.length ? (
-						filter === undefined ? options.find(option => option.value == value)?.label : <><Icon filter_list /><input type="text" autoFocus spellCheck={false} value={filter} {...{
+						!expanded || filter === undefined ? options.find(option => option.value == value)?.label : <><Icon search /><input type="text" autoFocus spellCheck={false} value={filter} {...{
 							[captureInputs ? "onInputCapture" : "onInput"]: (event: FormEvent<HTMLInputElement>) => {
 								if (captureInputs) {
 									event.stopPropagation();
@@ -108,7 +140,7 @@ export function Dropdown<Value extends DropdownValue>({
 								setFilter(event.currentTarget.value);
 							}
 						}} /></>
-					) : <i>No options</i>}
+					) : <i>{noOptionsMessage}</i>}
 				</div>
 				<Icon icon={`keyboard_arrow_${expanded ? "up" : "down"}`} className="dropdown-icon" />
 				{list}

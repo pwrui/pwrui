@@ -1,6 +1,6 @@
 {
   "name": "pwrui",
-  "version": "0.0.67",
+  "version": "0.0.68",
   "description": "A library for building interactive React apps.",
   "author": "wipmate",
   "keywords": [
@@ -9,7 +9,7 @@
   ],
   "license": "MIT",
   "scripts": {
-    "build": "tsc && cp node_modules/material-symbols/*.woff2 dist/ && tsx src/style/color.build.ts && cp src/style/color.build.scss dist/color.scss && cp src/style/symbols-dynamic.css dist/symbols-dynamic.css && sass --style compressed --no-source-map -I node_modules --quiet-deps src/style/main.scss dist/style.css && sass --style compressed --no-source-map -I node_modules --quiet-deps src/style/symbols-static.scss dist/symbols-static.css"
+    "build": "tsc && shx cp node_modules/material-symbols/*.woff2 dist/ && tsx src/style/color.build.ts && shx cp src/style/color.build.scss dist/color.scss && shx cp src/style/symbols-dynamic.css dist/symbols-dynamic.css && sass --style compressed --no-source-map -I node_modules --quiet-deps src/style/main.scss dist/style.css && sass --style compressed --no-source-map -I node_modules --quiet-deps src/style/symbols-static.scss dist/symbols-static.css"
   },
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -56,6 +56,7 @@
     "material-symbols": "^0.34.0",
     "opentype.js": "^2.0.0",
     "sass": "^1.83.4",
+    "shx": "^0.4.0",
     "subset-font": "^2.5.0",
     "tsx": "^4.20.4",
     "typescript": "^5.7.3",

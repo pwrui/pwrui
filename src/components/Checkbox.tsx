@@ -39,12 +39,12 @@ export function Checkbox({
     <input type="checkbox" style={{ display: "none" }} readOnly checked={isChecked} name={name} ref={ref} />
     <Button
       onPress={useCallback(() => {
-        if (typeof checked === "boolean") {
+        if (checked !== undefined) {
           setChecked?.(!checked);
         } else {
           setUncontrolledChecked(prev => !prev);
         }
-      }, [setChecked, setUncontrolledChecked])}
+      }, [checked, setChecked, setUncontrolledChecked])}
       style={{ ...style }}
       className="transparent"
       {...props}
