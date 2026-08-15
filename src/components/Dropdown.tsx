@@ -52,7 +52,7 @@ export function Dropdown<Value extends DropdownValue>({
     if (expanded && listRef.current) {
       const activeItem = listRef.current.querySelector<HTMLElement>(".dropdown-item.active");
       if (activeItem) {
-        activeItem.scrollIntoView({ block: "nearest" });
+        activeItem.scrollIntoView({ block: "center" });
       }
     }
   }, [expanded]);
