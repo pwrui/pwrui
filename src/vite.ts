@@ -1,15 +1,46 @@
-import { readdirSync, readFileSync } from "fs";
+import { readdirSync, readFileSync, existsSync, mkdirSync, writeFileSync } from "fs";
 import { join } from "path";
+import { createHash } from "crypto";
 import { Plugin } from "vite";
 import { IconType } from "pwrui";
 
 const CSS_URL_BASE = "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0";
-const UA = "Mozilla/5.0 AppleWebKit/500 Chrome/100";
+const UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
 
 const VIRTUAL_MODULE_ID = "pwrui/symbols-dynamic.css";
 const RESOLVED_VIRTUAL_MODULE_ID = "\0" + VIRTUAL_MODULE_ID;
 
 let globalFontPromise: Promise<string> | null = null;
+
+async function fetchWithRetry(url: string, options: RequestInit = {}, retries = 3, backoffMs = 1000): Promise<Response> {
+  let lastError: unknown;
+
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      const res = await fetch(url, {
+        ...options,
+        signal: AbortSignal.timeout(10000)
+      });
+
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status} ${res.statusText}`);
+      }
+
+      return res;
+    } catch (err) {
+      lastError = err;
+      if (attempt < retries) {
+        const delay = backoffMs * Math.pow(2, attempt - 1);
+        console.warn(
+          `[pwrui] Fetch failed (${err instanceof Error ? err.message : String(err)}). Retrying (${attempt}/${retries}) in ${delay}ms...`
+        );
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+    }
+  }
+
+  throw lastError;
+}
 
 const fetchFontDataUri = async (srcDir: string, extraIcons: IconType[]): Promise<string> => {
   const icons = new Set<string>(extraIcons);
@@ -37,10 +68,9 @@ const fetchFontDataUri = async (srcDir: string, extraIcons: IconType[]): Promise
   const sorted = [...icons].sort();
   console.log(`[pwrui] Generating material symbols font with ${sorted.length} icons.`);
 
-  const cssRes = await fetch(`${CSS_URL_BASE}&icon_names=${sorted.join(",")}`, { headers: { "User-Agent": UA } });
-  if (!cssRes.ok) {
-    throw new Error(`Failed to fetch Material Symbols CSS (${cssRes.status} ${cssRes.statusText})`);
-  }
+  const cssRes = await fetchWithRetry(`${CSS_URL_BASE}&icon_names=${sorted.join(",")}`, {
+    headers: { "User-Agent": UA }
+  });
 
   const css = await cssRes.text();
   const match = css.match(/url\((https:\/\/fonts\.gstatic\.com\/[^)]+)\)\s*format\(['"]woff2['"]\)/);
@@ -48,11 +78,7 @@ const fetchFontDataUri = async (srcDir: string, extraIcons: IconType[]): Promise
     throw new Error("No woff2 URL found in retrieved Google Fonts CSS.");
   }
 
-  const fontRes = await fetch(match[1]);
-  if (!fontRes.ok) {
-    throw new Error(`Failed to fetch woff2 font file (${fontRes.status} ${fontRes.statusText})`);
-  }
-
+  const fontRes = await fetchWithRetry(match[1]);
   const fontBuffer = await fontRes.arrayBuffer();
   return Buffer.from(fontBuffer).toString("base64");
 };
