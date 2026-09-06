@@ -49,13 +49,16 @@ export function Dropdown<Value extends DropdownValue>({
 	}, [options, setValue]);
 
 	useEffect(() => {
-    if (expanded && listRef.current) {
-      const activeItem = listRef.current.querySelector<HTMLElement>(".dropdown-item.active");
-      if (activeItem) {
-        activeItem.scrollIntoView({ block: "center" });
-      }
-    }
-  }, [expanded]);
+		const list = listRef.current;
+		if (expanded && list) {
+			if (list.scrollHeight > list.clientHeight) {
+				const activeItem = list.querySelector<HTMLElement>(".dropdown-item.active");
+				if (activeItem) {
+					activeItem.scrollIntoView({ block: "center" });
+				}
+			}
+		}
+	}, [expanded]);
 
 	useEffect(() => {
 		if (!expanded) {
@@ -80,28 +83,32 @@ export function Dropdown<Value extends DropdownValue>({
 	}, [expanded, filter, setExpanded]);
 
 	const filteredOptions = useMemo(() => {
-    if (!filter) return options;
+		if (!filter) return options;
 
-    const needles = filter.toLocaleLowerCase().split(" ");
+		const needles = filter.toLocaleLowerCase().split(" ");
 
-    return options.filter(option => {
-      const labelIsString = typeof option.label === "string";
-      const valueIsString = typeof option.value === "string";
+		return options.filter(option => {
+			const labelIsString = typeof option.label === "string";
+			const valueIsString = typeof option.value === "string";
 
-      if (!labelIsString && !valueIsString) {
-        return true;
-      }
+			if (!labelIsString && !valueIsString) {
+				return true;
+			}
 
-      const targetText = (labelIsString ? (option.label as string) : (option.value as string)).toLocaleLowerCase();
-      return needles.every(needle => targetText.includes(needle));
-    });
-  }, [options, filter]);
+			const targetText = (labelIsString ? (option.label as string) : (option.value as string)).toLocaleLowerCase();
+			return needles.every(needle => targetText.includes(needle));
+		});
+	}, [options, filter]);
+
+	const filteredOptionValuePreview = useMemo(() => {
+		return filteredOptions.some(option => option.value === value) ? undefined : filteredOptions[0]?.value;
+	}, [filteredOptions, value]);
 
 	const list = <div className={`dropdown-list dropdown-list-${listDirection}`} ref={listRef}>
 		<div {...(displayAsList ? props : {})}>
 			{filteredOptions.length ? filteredOptions.map(option => <div
 				key={option.value?.toString()}
-				className={"dropdown-item" + (option.value == value ? " active" : "")}
+				className={"dropdown-item" + (option.value == (filteredOptionValuePreview ?? value) ? " active" : "")}
 				{...{
 					[captureInputs ? "onClickCapture" : "onClick"]: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
 						if (captureInputs) {
@@ -125,7 +132,7 @@ export function Dropdown<Value extends DropdownValue>({
 					if (captureInputs && !(event.target instanceof HTMLDivElement && event.target.classList.contains("dropdown-item"))) {
 						event.stopPropagation();
 					}
-					if (dropdown.current && options.length) {
+					if (dropdown.current && options.length && !(event.target instanceof HTMLInputElement)) {
 						setExpanded(pre => !pre);
 					}
 				}
@@ -138,6 +145,17 @@ export function Dropdown<Value extends DropdownValue>({
 									event.stopPropagation();
 								}
 								setFilter(event.currentTarget.value);
+							},
+							[captureInputs ? "onKeyDownCapture" : "onKeyDown"]: (event: KeyboardEvent) => {
+								if (event.key === "Enter") {
+									if (captureInputs) {
+										event.stopPropagation();
+									}
+									if (filteredOptionValuePreview !== undefined) {
+										setValue(filteredOptionValuePreview);
+									}
+									setExpanded(false);
+								}
 							}
 						}} /></>
 					) : <i>{noOptionsMessage}</i>}

@@ -42,10 +42,10 @@ button {
   border-radius: $radius;
   box-shadow: none;
   border: none;
+  @include color-outline;
 
   cursor: pointer;
   user-select: none;
-  outline: none;
   -webkit-tap-highlight-color: transparent;
 
   --idle-background: #{$color-surface-container-low};
@@ -59,12 +59,17 @@ button {
     background: var(--hover-background);
   }
 
+  &:focus-visible {
+    outline-color: currentColor !important;
+  }
+
   &.transparent {
     padding-left: 0;
     padding-right: 0;
     color: $color-on-surface;
     background: none !important;
     font-weight: inherit;
+    outline-color: transparent;
   }
 
   &:disabled {
@@ -82,12 +87,13 @@ button {
   gap: $gap;
   background: $color-surface-container-lowest;
   border-radius: $radius;
+  @include color-outline;
 }
 
 /* dropdowns */
 
 .dropdown {
-  min-height: calc($gap + var(--size-icon));
+  height: calc($gap + var(--size-icon));
   padding: calc($gap / 2) $gap;
   box-sizing: border-box;
   display: inline-flex;
@@ -102,9 +108,11 @@ button {
   user-select: none;
   -webkit-tap-highlight-color: transparent;
   position: relative;
+  @include color-outline;
 
   &.dropdown-expanded {
     border-radius: $radius $radius 0 0;
+    outline: none;
   }
 
   &:not(.dropdown-expanded):hover {
@@ -121,6 +129,7 @@ button {
     text-overflow: ellipsis;
 
     input {
+      width: 100%;
       padding: 0;
       color: inherit;
       font: inherit;
@@ -141,23 +150,35 @@ button {
   background: $color-surface-container-low;
   border-radius: $radius;
   cursor: pointer;
-  overflow-y: auto;
+  @include color-outline;
 
   & > div {
     display: flex;
     flex-direction: column;
     border-radius: inherit;
     background: inherit;
+    overflow-y: auto;
   }
 
   &.dropdown-list-row {
     background: none;
+    @include color-outline;
 
     & > div {
       flex-direction: row;
-      gap: $gap;
+
+      &:first-child {
+        border-top-left-radius: $radius;
+        border-bottom-left-radius: $radius;
+      }
+
+      &:last-child {
+        border-top-right-radius: $radius;
+        border-bottom-right-radius: $radius;
+      }
 
       .dropdown-item {
+        border-radius: 0;
         justify-content: center;
       }
     }
@@ -172,8 +193,22 @@ button {
   z-index: 1;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
+  outline: none;
   & > div {
     gap: 0;
+  }
+  &:after {
+    content: "";
+    display: block;
+    position: absolute;
+    @include color-outline;
+    top: calc(-1 * $gap - var(--size-icon));
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    border-radius: $radius;
+    pointer-events: none;
   }
 }
 

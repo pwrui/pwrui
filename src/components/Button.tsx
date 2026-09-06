@@ -26,10 +26,11 @@ export function Button(props: PropsWithChildren<ComponentProps<"button"> & { onP
     }}
     style={{
       ...(scheme ? {
-        color: COLOR[`on${(scheme[0].toUpperCase() + scheme.substring(1)) as "Primary" | "Red" | "Green" | "Blue"}Container`],
+        color: `var(--color-on-${scheme}-container)`,
         "--idle-background": COLOR[`${scheme}Container`],
         "--hover-background": `color-mix(in srgb, currentColor 8%, var(--idle-background))`,
         "--opacity-multiplier": 1,
+        outlineColor: "transparent",
       } : {}),
       ...style,
     }}

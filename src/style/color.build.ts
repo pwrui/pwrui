@@ -4,12 +4,13 @@ import { argbFromHex, Hct, hexFromArgb, MaterialDynamicColors, SchemeExpressive 
 import { capitalize, schemeColorNames, toKebapCase, universalColorNames } from "./index.js";
 
 const colorThemes = {
-  teal: "#13c2d9",
+  purple: "#7900eb",
   blue: "#0085eb",
-  red: "#782424",
+  teal: "#13c2d9",
   green: "#00b43c",
-  orange: "#d28614",
   yellow: "#ffea00",
+  orange: "#d28614",
+  red: "#782424",
 } as const;
 
 const createSchemes = (hex: string, hueOffset = 0) => {
@@ -72,21 +73,32 @@ const sassVariables = [...universalColorNames, ...schemeColorNames, ...discreteC
 
 const sass = `@use "sass:map";
 ${sassVariables}
+$color-outline-optional: var(--color-outline-optional);
+@mixin color-outline {
+  outline: 1px solid $color-outline-optional;
+  outline-offset: -1px;
+}
 
 $theme-colors-light: (${buildDynamicMap("light")});
 $theme-colors-dark: (${buildDynamicMap("dark")});
 
-:root { ${generateDiscreteTokens("light")} }
+:root { ${generateDiscreteTokens("light")} --color-outline-optional: transparent; }
 @media (prefers-color-scheme: dark) { :root { ${generateDiscreteTokens("dark")} } }
 
 @mixin color-scheme($theme-name) {
   @each $token, $value in map.get($theme-colors-light, $theme-name) {
     --color-#{$token}: #{$value};
   }
+  &[data-outline] {
+    --color-outline-optional: color-mix(in srgb, #{$color-outline-variant} 33%, transparent);
+  }
 
   @media (prefers-color-scheme: dark) {
     @each $token, $value in map.get($theme-colors-dark, $theme-name) {
       --color-#{$token}: #{$value};
+      &[data-outline] {
+        --color-outline-optional: color-mix(in srgb, #{$color-outline-variant} 66%, transparent);
+      }
     }
   }
 }`;
