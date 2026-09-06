@@ -79,7 +79,7 @@ $theme-colors-dark: (${buildDynamicMap("dark")});
 :root { ${generateDiscreteTokens("light")} }
 @media (prefers-color-scheme: dark) { :root { ${generateDiscreteTokens("dark")} } }
 
-@mixin apply-theme($theme-name) {
+@mixin color-scheme($theme-name) {
   @each $token, $value in map.get($theme-colors-light, $theme-name) {
     --color-#{$token}: #{$value};
   }

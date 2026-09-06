@@ -22,13 +22,13 @@ import "pwrui/style.css";
 import "pwrui/symbols-static.css";
 ```
 
-Import pwrui colors and choose the primary theme color in your SASS stylesheet:
+Import pwrui colors and choose the primary color scheme in your SASS stylesheet:
 
 ```scss
 @use "pwrui/color" as *;
 
 :root {
-  @include apply-theme("blue");
+  @include color-scheme("blue");
 }
 ```
 
