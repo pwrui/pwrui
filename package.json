@@ -1,6 +1,7 @@
 {
   "name": "pwrui",
-  "version": "0.0.71",
+  "version": "0.0.72",
+  "type": "module",
   "description": "A library for building interactive React apps.",
   "author": "wipmate",
   "keywords": [

@@ -7,16 +7,20 @@ export const schemeColorNames = [
 ] as const;
 
 export const discreteColorNames = [
-	"red", "onRed", "redContainer", "onRedContainer", "inverseRed", "redFixed", "redFixedDim", "onRedFixed", "onRedFixedVariant",
-	"green", "onGreen", "greenContainer", "onGreenContainer", "inverseRed", "greenFixed", "greenFixedDim", "onRedFixed", "onRedFixedVariant",
 	"blue", "onBlue", "blueContainer", "onBlueContainer", "inverseBlue", "blueFixed", "blueFixedDim", "onBlueFixed", "onBlueFixedVariant",
-	"orange", "onOrange", "orangeContainer", "onOrangeContainer", "inverseRed", "orangeFixed", "orangeFixedDim", "onRedFixed", "onRedFixedVariant",
+	"teal", "onTeal", "tealContainer", "onTealContainer", "inverseTeal", "tealFixed", "tealFixedDim", "onTealFixed", "onTealFixedVariant",
+	"green", "onGreen", "greenContainer", "onGreenContainer", "inverseGreen", "greenFixed", "greenFixedDim", "onGreenFixed", "onGreenFixedVariant",
+	"yellow", "onYellow", "yellowContainer", "onYellowContainer", "inverseYellow", "yellowFixed", "yellowFixedDim", "onYellowFixed", "onYellowFixedVariant",
+	"orange", "onOrange", "orangeContainer", "onOrangeContainer", "inverseOrange", "orangeFixed", "orangeFixedDim", "onOrangeFixed", "onOrangeFixedVariant",
+	"red", "onRed", "redContainer", "onRedContainer", "inverseRed", "redFixed", "redFixedDim", "onRedFixed", "onRedFixedVariant",
 ] as const;
 
 export const allColorNames = [...universalColorNames, ...schemeColorNames, ...discreteColorNames] as const;
 
 export const toKebapCase = (name: string) => name.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
 
-export type Scheme = "primary" | "red" | "green" | "blue" | "orange";
+export const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
+
+export type Scheme = "primary" | "blue" | "teal" | "green" | "yellow" | "orange" | "red";
 
 export const COLOR = Object.fromEntries(allColorNames.map(key => [key, `var(--color-${toKebapCase(key)})`])) as Record<typeof allColorNames[number], string>;

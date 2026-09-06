@@ -1,5 +1,4 @@
 import { ComponentProps, PropsWithChildren, ReactElement, ReactNode } from "react";
-
 import { Icon } from "./Icon.js";
 import { COLOR } from "../style/index.js";
 

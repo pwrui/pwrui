@@ -1,13 +1,6 @@
 # ![](src/pwrui.svg) pwrui
 
-Still in its early stages, pwrui is intended to grow into a powerful, flexible, and easy-to-use library for building interactive [React](https://github.com/facebook/react) applications.  
-While pwrui is best used in applications based on [React Router](https://github.com/remix-run/react-router) (framework), most of its assets and components can be used in any environment.
-
-> [!WARNING]
-> This project is work in progress.
-
-## Demo
-
+pwrui is a powerful, flexible, and easy-to-use library for building interactive [React](https://github.com/facebook/react) applications.  
 Check out the [demo page](https://pwrui.wipmate.de/) for an overview on the available components and assets.
 
 ## Installation
@@ -22,11 +15,21 @@ yarn add pwrui
 
 ## Usage
 
-Import the following stylesheets in your main JS file:
+Import the following stylesheets in your JS client entrypoint:
 
 ```js
 import "pwrui/style.css";
 import "pwrui/symbols-static.css";
+```
+
+Import pwrui colors and choose the primary theme color in your SASS stylesheet:
+
+```scss
+@use "pwrui/color" as *;
+
+:root {
+  @include apply-theme("blue");
+}
 ```
 
 The library currently provides the following components:
@@ -39,7 +42,7 @@ The library currently provides the following components:
 - `<Spinner />`
 - `<ThemeSelector />`
 
-The following example shows how to use the [Material Symbols](https://fonts.google.com/icons) included in pwrui:
+Icons in pwrui are based on the [Material Symbols](https://fonts.google.com/icons):
 
 ```jsx
 import { Icon } from "pwrui";

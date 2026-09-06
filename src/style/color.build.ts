@@ -1,52 +1,94 @@
 import { writeFileSync } from "fs";
 import { resolve } from "path";
-import { argbFromHex, Hct, hexFromArgb, MaterialDynamicColors, SchemeTonalSpot } from "@material/material-color-utilities";
+import { argbFromHex, Hct, hexFromArgb, MaterialDynamicColors, SchemeExpressive } from "@material/material-color-utilities";
+import { capitalize, schemeColorNames, toKebapCase, universalColorNames } from "./index.js";
 
-import { allColorNames, schemeColorNames, Scheme, toKebapCase, universalColorNames } from "./index.js";
+const colorThemes = {
+  teal: "#13c2d9",
+  blue: "#0085eb",
+  red: "#782424",
+  green: "#00b43c",
+  orange: "#d28614",
+  yellow: "#ffea00",
+} as const;
 
-const schemeDarkLight = (color: string) => {
-  const sourceColorHct = Hct.fromInt(argbFromHex(color));
+const createSchemes = (hex: string, hueOffset = 0) => {
+  const hct = Hct.fromInt(argbFromHex(hex));
+  if (hueOffset) {
+    hct.hue = (hct.hue + hueOffset + 360) % 360;
+  }
   return {
-    dark: new SchemeTonalSpot(sourceColorHct, true, 0),
-    light: new SchemeTonalSpot(sourceColorHct, false, 0),
+    light: new SchemeExpressive(hct, false, 0),
+    dark: new SchemeExpressive(hct, true, 0),
   };
 };
 
-export const schemes: Record<Scheme, ReturnType<typeof schemeDarkLight>> = {
-  primary: schemeDarkLight("#0085eb"),
-  red: schemeDarkLight("#782424"),
-  green: schemeDarkLight("#00b43c"),
-  blue: schemeDarkLight("#0085eb"),
-  orange: schemeDarkLight("#d28914"),
+const resolveColor = (token: string, scheme: SchemeExpressive): string => {
+  const dynamicColor = (MaterialDynamicColors as Record<string, any>)[token];
+  return dynamicColor ? hexFromArgb(dynamicColor.getArgb(scheme)) : "#ffffff";
 };
 
-const schemeToSass = (scheme: SchemeTonalSpot, color?: string) => {
-  return [...schemeColorNames, ...(color && color !== "primary" ? [] : universalColorNames)]
-    .map(name => {
-      const dynamicColor = (MaterialDynamicColors as Record<string, any>)[name];
-      const argb = dynamicColor ? dynamicColor.getArgb(scheme) : 0;
-      return `--color-${color ? toKebapCase(name as string).replace("primary", color) : toKebapCase(name as string)}: ${hexFromArgb(argb)};`;
+const themeSchemes = Object.entries(colorThemes).map(([name, hex]) => ({
+  name,
+  universal: createSchemes(hex),
+  adjusted: createSchemes(hex, 120),
+}));
+
+const generateDiscreteTokens = (mode: "light" | "dark") => {
+  return themeSchemes
+    .flatMap(({ name: themeName, adjusted }) => {
+      const scheme = adjusted[mode];
+      return schemeColorNames.map((schemeToken) => {
+        const name = schemeToken.replace("primary", themeName).replace("Primary", capitalize(themeName));
+        return `--color-${toKebapCase(name)}: ${resolveColor(schemeToken, scheme)};`;
+      });
     })
-    .join("\n  ");
+    .join("\n");
 };
 
-const sass = `${allColorNames.map(name => toKebapCase(name)).map(name => `$color-${name}: var(--color-${name});`).join("\n")}
+const buildDynamicMap = (mode: "light" | "dark") => {
+  return themeSchemes
+    .map(({ name: themeName, universal, adjusted }) => {
+      const formatEntries = (tokens: readonly string[], scheme: SchemeExpressive) =>
+        tokens.map(token => `"${toKebapCase(token)}": ${resolveColor(token, scheme)}`);
 
-:root {
-  ${schemeToSass(schemes.primary.light, "primary")}
-  ${schemeToSass(schemes.red.light, "red")}
-  ${schemeToSass(schemes.green.light, "green")}
-  ${schemeToSass(schemes.blue.light, "blue")}
-  ${schemeToSass(schemes.orange.light, "orange")}
+      const entries = [
+        ...formatEntries(universalColorNames, universal[mode]),
+        ...formatEntries(schemeColorNames, adjusted[mode]),
+      ];
 
-@media (prefers-color-scheme: dark) {
-  ${schemeToSass(schemes.primary.dark, "primary")}
-  ${schemeToSass(schemes.red.dark, "red")}
-  ${schemeToSass(schemes.green.dark, "green")}
-  ${schemeToSass(schemes.blue.dark, "blue")}
-  ${schemeToSass(schemes.orange.dark, "orange")}
-}
-}
-`;
+      return `"${themeName}": (\n${entries.join(",\n")}\n)`;
+    })
+    .join(",\n");
+};
 
-writeFileSync(resolve(__dirname, "color.build.scss"), sass, "utf-8");
+const discreteColorNames = Object.keys(colorThemes).flatMap(theme =>
+  schemeColorNames.map(token => token.replace("primary", theme))
+);
+
+const sassVariables = [...universalColorNames, ...schemeColorNames, ...discreteColorNames]
+  .map(name => `$color-${toKebapCase(name)}: var(--color-${toKebapCase(name)});`)
+  .join("\n");
+
+const sass = `@use "sass:map";
+${sassVariables}
+
+$theme-colors-light: (${buildDynamicMap("light")});
+$theme-colors-dark: (${buildDynamicMap("dark")});
+
+:root { ${generateDiscreteTokens("light")} }
+@media (prefers-color-scheme: dark) { :root { ${generateDiscreteTokens("dark")} } }
+
+@mixin apply-theme($theme-name) {
+  @each $token, $value in map.get($theme-colors-light, $theme-name) {
+    --color-#{$token}: #{$value};
+  }
+
+  @media (prefers-color-scheme: dark) {
+    @each $token, $value in map.get($theme-colors-dark, $theme-name) {
+      --color-#{$token}: #{$value};
+    }
+  }
+}`;
+
+writeFileSync(resolve(import.meta.dirname, "color.build.scss"), sass, "utf-8");
