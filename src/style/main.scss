@@ -150,6 +150,7 @@ button {
   background: $color-surface-container-low;
   border-radius: $radius;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
   @include color-outline;
 
   & > div {
@@ -227,6 +228,7 @@ button {
   gap: calc($gap / 2);
   background: $color-surface-container-low;
   border-radius: $radius;
+  -webkit-tap-highlight-color: transparent;
 
   &.active {
     font-weight: 600;
