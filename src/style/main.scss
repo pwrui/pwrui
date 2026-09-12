@@ -218,7 +218,7 @@ button {
   display: flex;
   flex-direction: row;
   align-items: center;
-  flex: 1;
+  flex: 1 0;
   gap: calc($gap / 2);
   background: $color-surface-container-low;
   border-radius: $radius;
