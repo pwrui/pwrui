@@ -16,7 +16,8 @@ export function Dropdown<Value extends DropdownValue>({
 	selectDefaultValue = true,
 	captureInputs = false,
 	defaultExpanded = false,
-	defaultFilter = undefined,
+	defaultFilter,
+	defaultValue,
 	displayAsList = false,
 	listDirection = "column",
 	noOptionsMessage = "No options",
@@ -32,6 +33,7 @@ export function Dropdown<Value extends DropdownValue>({
 		captureInputs?: boolean,
 		defaultExpanded?: boolean,
 		defaultFilter?: string,
+		defaultValue?: Value,
 		displayAsList?: boolean,
 		listDirection?: "row" | "column",
 		noOptionsMessage?: string,
@@ -41,12 +43,12 @@ export function Dropdown<Value extends DropdownValue>({
 	const listRef = useRef<HTMLDivElement>(null);
 	const [expanded, setExpanded] = useState(defaultExpanded);
 	const [filter, setFilter] = useState<string | undefined>(defaultFilter);
-	const [uncontrolledValue, setUncontrolledValue] = useState(value);
+	const [uncontrolledValue, setUncontrolledValue] = useState<Value | undefined>(value ?? defaultValue);
 	const internalValue = value ?? uncontrolledValue;
 
-	const setValueBoth = (value: Value) => {
-		setValue?.(value);
-		setUncontrolledValue(value);
+	const setValueBoth = (updateValue: Value) => {
+		setValue?.(updateValue);
+		setUncontrolledValue(updateValue);
 	};
 
 	useEffect(() => {
