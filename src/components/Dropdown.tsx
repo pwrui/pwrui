@@ -27,7 +27,7 @@ export function Dropdown<Value extends DropdownValue>({
 	& {
 		options: readonly DropdownOption<Value>[],
 		value?: Value,
-		setValue: (value: Value) => void,
+		setValue?: (value: Value) => void,
 		selectDefaultValue?: boolean,
 		captureInputs?: boolean,
 		defaultExpanded?: boolean,
@@ -41,12 +41,19 @@ export function Dropdown<Value extends DropdownValue>({
 	const listRef = useRef<HTMLDivElement>(null);
 	const [expanded, setExpanded] = useState(defaultExpanded);
 	const [filter, setFilter] = useState<string | undefined>(defaultFilter);
+	const [uncontrolledValue, setUncontrolledValue] = useState(value);
+	const internalValue = value ?? uncontrolledValue;
+
+	const setValueBoth = (value: Value) => {
+		setValue?.(value);
+		setUncontrolledValue(value);
+	};
 
 	useEffect(() => {
-		if (selectDefaultValue && options.length && !options.some(option => option.value === value)) {
-			setValue(options[0].value);
+		if (selectDefaultValue && options.length && !options.some(option => option.value === internalValue)) {
+			setValueBoth(options[0].value);
 		}
-	}, [options, setValue]);
+	}, [options]);
 
 	useEffect(() => {
 		const list = listRef.current;
@@ -101,20 +108,20 @@ export function Dropdown<Value extends DropdownValue>({
 	}, [options, filter]);
 
 	const filteredOptionValuePreview = useMemo(() => {
-		return filteredOptions.some(option => option.value === value) ? undefined : filteredOptions[0]?.value;
-	}, [filteredOptions, value]);
+		return filteredOptions.some(option => option.value === internalValue) ? undefined : filteredOptions[0]?.value;
+	}, [filteredOptions, internalValue]);
 
-	const list = <div className={`dropdown-list dropdown-list-${listDirection}`} ref={listRef}>
-		<div {...(displayAsList ? props : {})}>
+	const list = <div className={`dropdown-list dropdown-list-${listDirection}`}>
+		<div {...(displayAsList ? props : {})} ref={listRef}>
 			{filteredOptions.length ? filteredOptions.map(option => <div
 				key={option.value?.toString()}
-				className={"dropdown-item" + (option.value == (filteredOptionValuePreview ?? value) ? " active" : "")}
+				className={"dropdown-item" + (option.value == (filteredOptionValuePreview ?? internalValue) ? " active" : "")}
 				{...{
 					[captureInputs ? "onClickCapture" : "onClick"]: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
 						if (captureInputs) {
 							event.stopPropagation();
 						}
-						setValue(option.value);
+						setValueBoth(option.value);
 					}
 				}}
 			>
@@ -124,7 +131,7 @@ export function Dropdown<Value extends DropdownValue>({
 	</div>;
 
 	return <>
-		<input type="hidden" readOnly value={value?.toString()} name={name} ref={ref} />
+		<input type="hidden" readOnly value={internalValue?.toString()} name={name} ref={ref} />
 		{displayAsList
 			? list
 			: <div {...props} className={`dropdown ${expanded ? "dropdown-expanded" : ""}`} ref={dropdown} {...{
@@ -139,7 +146,7 @@ export function Dropdown<Value extends DropdownValue>({
 			}}>
 				<div className="dropdown-value">
 					{options.length ? (
-						!expanded || filter === undefined ? options.find(option => option.value == value)?.label : <><Icon search /><input type="text" autoFocus spellCheck={false} value={filter} {...{
+						!expanded || filter === undefined ? options.find(option => option.value == internalValue)?.label : <><Icon search /><input type="text" autoFocus spellCheck={false} value={filter} {...{
 							[captureInputs ? "onInputCapture" : "onInput"]: (event: FormEvent<HTMLInputElement>) => {
 								if (captureInputs) {
 									event.stopPropagation();
@@ -152,7 +159,7 @@ export function Dropdown<Value extends DropdownValue>({
 										event.stopPropagation();
 									}
 									if (filteredOptionValuePreview !== undefined) {
-										setValue(filteredOptionValuePreview);
+										setValueBoth(filteredOptionValuePreview);
 									}
 									setExpanded(false);
 								}

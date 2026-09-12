@@ -24,7 +24,7 @@ export function Checkbox({
   }
 ): ReactElement {
   const [uncontrolledChecked, setUncontrolledChecked] = useState(defaultChecked ?? false);
-  const isChecked = checked ?? uncontrolledChecked;
+  const internalChecked = checked ?? uncontrolledChecked;
   const isInitialRender = useRef(true);
 
   useEffect(() => {
@@ -36,7 +36,7 @@ export function Checkbox({
   }, [setChecked, uncontrolledChecked]);
 
   return <>
-    <input type="checkbox" style={{ display: "none" }} readOnly checked={isChecked} name={name} ref={ref} />
+    <input type="checkbox" style={{ display: "none" }} readOnly checked={internalChecked} name={name} ref={ref} />
     <Button
       onPress={useCallback(() => {
         if (checked !== undefined) {
@@ -49,7 +49,7 @@ export function Checkbox({
       className="transparent"
       {...props}
     >
-      <Icon style={{ color: isChecked ? COLOR.primary : COLOR.outlineVariant, height: "24px" }} icon={isChecked ? "check_box" : "check_box_outline_blank"} />
+      <Icon style={{ color: internalChecked ? COLOR.primary : COLOR.outlineVariant, height: "24px" }} icon={internalChecked ? "check_box" : "check_box_outline_blank"} />
       {children ?? null}
     </Button>
   </>;

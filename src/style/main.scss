@@ -161,6 +161,7 @@ button {
     display: flex;
     flex-direction: column;
     overflow-y: auto;
+    border-radius: 0 0 $radius $radius;
   }
 
   &.dropdown-list-row {
