@@ -131,7 +131,7 @@ export function Dropdown<Value extends DropdownValue>({
 	</div>;
 
 	return <>
-		<input type="hidden" readOnly value={internalValue?.toString()} name={name} ref={ref} />
+		<input type="hidden" readOnly value={internalValue?.toString() ?? ""} name={name} ref={ref} />
 		{displayAsList
 			? list
 			: <div {...props} className={`dropdown ${expanded ? "dropdown-expanded" : ""}`} ref={dropdown} {...{
