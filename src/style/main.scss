@@ -88,6 +88,10 @@ button {
   background: $color-surface-container-lowest;
   border-radius: $radius;
   @include color-outline;
+
+  &.no-padding {
+    padding: 0;
+  }
 }
 
 /* dropdowns */
@@ -156,8 +160,6 @@ button {
   & > div {
     display: flex;
     flex-direction: column;
-    border-radius: inherit;
-    background: inherit;
     overflow-y: auto;
   }
 
@@ -188,28 +190,18 @@ button {
 
 .dropdown .dropdown-list {
   position: absolute;
-  max-height: 220px;
-  top: 100%;
+  padding-top: calc($gap + var(--size-icon));
+  top: 0;
   left: 0;
   z-index: 1;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-  outline: none;
+  background: none;
+  pointer-events: none;
+
   & > div {
-    gap: 0;
-  }
-  &:after {
-    content: "";
-    display: block;
-    position: absolute;
-    @include color-outline;
-    top: calc(-1 * $gap - var(--size-icon));
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 2;
-    border-radius: $radius;
-    pointer-events: none;
+    max-height: 220px;
+    overflow-y: auto;
+    background: $color-surface-container-low;
+    pointer-events: all;
   }
 }
 

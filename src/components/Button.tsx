@@ -1,7 +1,7 @@
 import { ComponentProps, MouseEvent, PropsWithChildren, ReactElement, useState } from "react";
 import { COLOR, Scheme } from "../style/index.js";
 
-export function Button(props: PropsWithChildren<ComponentProps<"button"> & { onPress?: (event?: MouseEvent<HTMLButtonElement>) => void, scheme?: Scheme }>): ReactElement {
+export function Button(props: PropsWithChildren<ComponentProps<"button"> & { onPress?: (event?: MouseEvent<HTMLButtonElement>) => void, scheme?: Scheme | "transparent" }>): ReactElement {
   const { style, onPress, children, scheme, ...otherProps } = props;
   const [ignorePress, setIgnorePress] = useState(false);
   return <button
@@ -26,9 +26,9 @@ export function Button(props: PropsWithChildren<ComponentProps<"button"> & { onP
     }}
     style={{
       ...(scheme ? {
-        color: `var(--color-on-${scheme}-container)`,
-        "--idle-background": COLOR[`${scheme}Container`],
-        "--hover-background": `color-mix(in srgb, currentColor 8%, var(--idle-background))`,
+        color: scheme === "transparent" ? undefined : `var(--color-on-${scheme}-container)`,
+        "--idle-background": scheme === "transparent" ? scheme : COLOR[`${scheme}Container`],
+        "--hover-background": scheme === "transparent" ? scheme : `color-mix(in srgb, currentColor 8%, var(--idle-background))`,
         "--opacity-multiplier": 1,
         outlineColor: "transparent",
       } : {}),

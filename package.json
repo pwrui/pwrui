@@ -1,6 +1,6 @@
 {
   "name": "pwrui",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "type": "module",
   "description": "A library for building interactive React apps.",
   "author": "wipmate",
@@ -10,7 +10,8 @@
   ],
   "license": "MIT",
   "scripts": {
-    "build": "tsc && shx cp node_modules/material-symbols/*.woff2 dist/ && tsx src/style/color.build.ts && shx cp src/style/color.build.scss dist/color.scss && shx cp src/style/symbols-dynamic.css dist/symbols-dynamic.css && sass --style compressed --no-source-map -I node_modules --quiet-deps src/style/main.scss dist/style.css && sass --style compressed --no-source-map -I node_modules --quiet-deps src/style/symbols-static.scss dist/symbols-static.css"
+    "build": "tsc && shx cp node_modules/material-symbols/*.woff2 dist/ && tsx src/style/color.build.ts && shx cp src/style/color.build.scss dist/color.scss && shx cp src/style/symbols-dynamic.css dist/symbols-dynamic.css && sass --style compressed --no-source-map -I node_modules --quiet-deps src/style/main.scss dist/style.css && sass --style compressed --no-source-map -I node_modules --quiet-deps src/style/symbols-static.scss dist/symbols-static.css",
+    "dev": "sass --watch --style compressed --no-source-map -I node_modules --quiet-deps src/style/main.scss dist/style.css"
   },
   "main": "dist/index.js",
   "module": "dist/index.js",
