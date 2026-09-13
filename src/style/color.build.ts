@@ -1,7 +1,7 @@
 import { writeFileSync } from "fs";
 import { resolve } from "path";
 import { argbFromHex, Hct, hexFromArgb, MaterialDynamicColors, SchemeExpressive } from "@material/material-color-utilities";
-import { capitalize, schemeColorNames, toKebapCase, universalColorNames } from "./index.js";
+import { allColorNames, capitalize, schemeColorNames, toKebapCase, universalColorNames } from "./index.js";
 
 const colorThemes = {
   purple: "#7900eb",
@@ -63,11 +63,7 @@ const buildDynamicMap = (mode: "light" | "dark") => {
     .join(",\n");
 };
 
-const discreteColorNames = Object.keys(colorThemes).flatMap(theme =>
-  schemeColorNames.map(token => token.replace("primary", theme))
-);
-
-const sassVariables = [...universalColorNames, ...schemeColorNames, ...discreteColorNames]
+const sassVariables = allColorNames
   .map(name => `$color-${toKebapCase(name)}: var(--color-${toKebapCase(name)});`)
   .join("\n");
 

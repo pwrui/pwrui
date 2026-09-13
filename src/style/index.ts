@@ -16,7 +16,11 @@ export const discreteColorNames = [
 	"red", "onRed", "redContainer", "onRedContainer", "inverseRed", "redFixed", "redFixedDim", "onRedFixed", "onRedFixedVariant",
 ] as const;
 
-export const allColorNames = [...universalColorNames, ...schemeColorNames, ...discreteColorNames] as const;
+export const customColorNames = [
+	"outlineOptional"
+] as const;
+
+export const allColorNames = [...universalColorNames, ...schemeColorNames, ...discreteColorNames, ...customColorNames] as const;
 
 export const toKebapCase = (name: string) => name.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
 

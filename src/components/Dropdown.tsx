@@ -23,7 +23,7 @@ export function Dropdown<Value extends DropdownValue>({
 	noOptionsMessage = "No options",
 	ref,
 	...props
-}: ComponentProps<"div">
+}: Omit<ComponentProps<"div">, "name" | "ref">
 	& Pick<ComponentProps<"input">, "name" | "ref">
 	& {
 		options: readonly DropdownOption<Value>[],
