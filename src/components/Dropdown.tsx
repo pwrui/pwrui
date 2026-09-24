@@ -19,6 +19,7 @@ export function Dropdown<Value extends DropdownValue>({
 	defaultFilter,
 	defaultValue,
 	displayAsList = false,
+	readOnly = false,
 	listDirection = "column",
 	noOptionsMessage = "No options",
 	ref,
@@ -35,6 +36,7 @@ export function Dropdown<Value extends DropdownValue>({
 		defaultFilter?: string,
 		defaultValue?: Value,
 		displayAsList?: boolean,
+		readOnly?: boolean,
 		listDirection?: "row" | "column",
 		noOptionsMessage?: string,
 	}
@@ -89,7 +91,13 @@ export function Dropdown<Value extends DropdownValue>({
 			document.removeEventListener("keydown", keydownListener);
 			document.removeEventListener("click", clickListener);
 		};
-	}, [expanded, filter, setExpanded]);
+	}, [expanded, filter]);
+
+	useEffect(() => {
+		if (readOnly) {
+			setExpanded(false);
+		}
+	}, [readOnly]);
 
 	const filteredOptions = useMemo(() => {
 		if (!filter) return options;
@@ -136,12 +144,12 @@ export function Dropdown<Value extends DropdownValue>({
 		<input type="hidden" readOnly value={internalValue?.toString() ?? ""} name={name} ref={ref} />
 		{displayAsList
 			? list
-			: <div {...props} className={`dropdown ${expanded ? "dropdown-expanded" : ""}`} ref={dropdown} {...{
+			: <div {...props} className={`dropdown ${expanded ? "dropdown-expanded" : ""} ${readOnly ? "dropdown-read-only" : ""}`} ref={dropdown} {...{
 				[captureInputs ? "onClickCapture" : "onClick"]: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
 					if (captureInputs && !(event.target instanceof HTMLDivElement && event.target.classList.contains("dropdown-item"))) {
 						event.stopPropagation();
 					}
-					if (dropdown.current && options.length && !(event.target instanceof HTMLInputElement)) {
+					if (dropdown.current && options.length && !(event.target instanceof HTMLInputElement) && !readOnly) {
 						setExpanded(pre => !pre);
 					}
 				}

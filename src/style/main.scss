@@ -119,7 +119,12 @@ button {
     outline: none;
   }
 
-  &:not(.dropdown-expanded):hover {
+  &.dropdown-read-only {
+    cursor: not-allowed;
+    background: none;
+  }
+
+  &:not(.dropdown-expanded):not(.dropdown-read-only):hover {
     background: $color-surface-container;
   }
 
