@@ -186,3 +186,5 @@ export function Dropdown<Value extends DropdownValue>({
 		}
 	</>;
 }
+
+Dropdown.displayName = "Dropdown";

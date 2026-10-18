@@ -3738,3 +3738,5 @@ export const ICONS: MaterialSymbol[] = [
   "zoom_out",
   "zoom_out_map",
 ] as const;
+
+Icon.displayName = "Icon";

@@ -76,3 +76,5 @@ function setTheme(theme: "light" | "dark" | "system") {
     }
   }
 }
+
+ThemeSelector.displayName = "ThemeSelector";

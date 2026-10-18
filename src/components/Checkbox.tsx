@@ -54,3 +54,5 @@ export function Checkbox({
     </Button>
   </>;
 }
+
+Checkbox.displayName = "Checkbox";

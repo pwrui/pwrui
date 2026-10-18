@@ -21,3 +21,5 @@ export function Spinner({ children, className, error, fullscreen = false, style,
 		}
 	</div>;
 }
+
+Spinner.displayName = "Spinner";

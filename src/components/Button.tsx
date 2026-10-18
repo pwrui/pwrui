@@ -40,3 +40,5 @@ export function Button(props: PropsWithChildren<ComponentProps<"button"> & { onP
     {children}
   </button>;
 }
+
+Button.displayName = "Button";

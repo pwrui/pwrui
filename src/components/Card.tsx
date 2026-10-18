@@ -5,3 +5,5 @@ export function Card({ children, className, noPadding, ...props }: PropsWithChil
     {children}
   </div>;
 }
+
+Card.displayName = "Card";
