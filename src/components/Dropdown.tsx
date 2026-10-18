@@ -16,6 +16,7 @@ export function Dropdown<Value extends DropdownValue>({
 	selectDefaultValue = true,
 	captureInputs = false,
 	defaultExpanded = false,
+	filter,
 	defaultFilter,
 	defaultValue,
 	displayAsList = false,
@@ -33,6 +34,7 @@ export function Dropdown<Value extends DropdownValue>({
 		selectDefaultValue?: boolean,
 		captureInputs?: boolean,
 		defaultExpanded?: boolean,
+		filter?: string,
 		defaultFilter?: string,
 		defaultValue?: Value,
 		displayAsList?: boolean,
@@ -44,9 +46,13 @@ export function Dropdown<Value extends DropdownValue>({
 	const dropdown = useRef<HTMLDivElement>(null);
 	const listRef = useRef<HTMLDivElement>(null);
 	const [expanded, setExpanded] = useState(defaultExpanded);
-	const [filter, setFilter] = useState<string | undefined>(defaultFilter);
+	const [internalFilter, setInternalFilter] = useState<string | undefined>(filter ?? defaultFilter);
 	const [uncontrolledValue, setUncontrolledValue] = useState<Value | undefined>(value ?? defaultValue);
 	const internalValue = value ?? uncontrolledValue;
+
+	useEffect(() => {
+		setInternalFilter(filter);
+	}, [filter]);
 
 	const setValueBoth = (updateValue: Value) => {
 		setValue?.(updateValue);
@@ -63,21 +69,18 @@ export function Dropdown<Value extends DropdownValue>({
 		const list = listRef.current;
 		if (expanded && list) {
 			if (list.scrollHeight > list.clientHeight) {
-				const activeItem = list.querySelector<HTMLElement>(".dropdown-item.active");
-				if (activeItem) {
-					activeItem.scrollIntoView({ block: "center" });
-				}
+				list.querySelector(".dropdown-item.active")?.scrollIntoView({ block: "center" });
 			}
 		}
 	}, [expanded]);
 
 	useEffect(() => {
 		if (!expanded) {
-			setFilter(defaultFilter);
+			setInternalFilter(defaultFilter);
 		}
 		const keydownListener = (event: KeyboardEvent) => {
-			if (expanded && !filter && /^[a-zA-Z0-9_ ]$/.test(event.key)) {
-				setFilter("");
+			if (expanded && !internalFilter && /^[a-zA-Z0-9_ ]$/.test(event.key)) {
+				setInternalFilter("");
 			}
 		};
 		const clickListener = (event: MouseEvent) => {
@@ -91,7 +94,7 @@ export function Dropdown<Value extends DropdownValue>({
 			document.removeEventListener("keydown", keydownListener);
 			document.removeEventListener("click", clickListener);
 		};
-	}, [expanded, filter]);
+	}, [expanded, internalFilter]);
 
 	useEffect(() => {
 		if (readOnly) {
@@ -100,9 +103,9 @@ export function Dropdown<Value extends DropdownValue>({
 	}, [readOnly]);
 
 	const filteredOptions = useMemo(() => {
-		if (!filter) return options;
+		if (!internalFilter) return options;
 
-		const needles = filter.toLocaleLowerCase().split(" ");
+		const needles = internalFilter.toLocaleLowerCase().split(" ");
 
 		return options.filter(option => {
 			const labelIsString = typeof option.label === "string";
@@ -115,10 +118,10 @@ export function Dropdown<Value extends DropdownValue>({
 			const targetText = (labelIsString ? (option.label as string) : (option.value as string)).toLocaleLowerCase();
 			return needles.every(needle => targetText.includes(needle));
 		});
-	}, [options, filter]);
+	}, [options, internalFilter]);
 
 	const filteredOptionValuePreview = useMemo(() => {
-		return filteredOptions.some(option => option.value === internalValue) ? undefined : filteredOptions[0]?.value;
+		return internalFilter && !filteredOptions.some(option => option.value === internalValue) ? filteredOptions[0]?.value : undefined;
 	}, [filteredOptions, internalValue]);
 
 	const list = <div className={`dropdown-list dropdown-list-${listDirection}`}>
@@ -156,12 +159,12 @@ export function Dropdown<Value extends DropdownValue>({
 			}}>
 				<div className="dropdown-value">
 					{options.length ? (
-						!expanded || filter === undefined ? options.find(option => option.value == internalValue)?.label : <><Icon search /><input type="text" autoFocus spellCheck={false} value={filter} {...{
+						!expanded || internalFilter === undefined ? options.find(option => option.value == internalValue)?.label : <><Icon search /><input type="text" autoFocus spellCheck={false} value={internalFilter} {...{
 							[captureInputs ? "onInputCapture" : "onInput"]: (event: FormEvent<HTMLInputElement>) => {
 								if (captureInputs) {
 									event.stopPropagation();
 								}
-								setFilter(event.currentTarget.value);
+								setInternalFilter(event.currentTarget.value);
 							},
 							[captureInputs ? "onKeyDownCapture" : "onKeyDown"]: (event: KeyboardEvent) => {
 								if (event.key === "Enter") {
