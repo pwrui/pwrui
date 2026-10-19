@@ -73,7 +73,7 @@ export function Dropdown<Value extends DropdownValue>({
 				list.querySelector(".dropdown-item.active")?.scrollIntoView({ block: "center" });
 			}
 		}
-	}, [expanded]);
+	}, [internalValue, expanded]);
 
 	useEffect(() => {
 		if (readOnly) {
@@ -117,7 +117,7 @@ export function Dropdown<Value extends DropdownValue>({
 					case "ArrowUp":
 						event.preventDefault();
 						if (filteredOptions.length === 0) return;
-						const currentIndex = filteredOptions.findIndex(o => o.value === internalValue);
+						const currentIndex = filteredOptions.findIndex(o => o.value === (filteredOptionValuePreview ?? internalValue));
 						let nextIndex = 0;
 						if (event.key === "ArrowDown") {
 							nextIndex = currentIndex === -1 ? 0 : (currentIndex + 1) % filteredOptions.length;
