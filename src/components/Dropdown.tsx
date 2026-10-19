@@ -9,39 +9,40 @@ export type DropdownOption<Value extends DropdownValue> = {
 };
 
 export function Dropdown<Value extends DropdownValue>({
-	name,
 	options,
-	value,
-	setValue,
+	value = undefined,
+	setValue = undefined,
 	selectDefaultValue = true,
 	captureInputs = false,
 	defaultExpanded = false,
-	filter,
-	defaultFilter,
-	defaultValue,
+	filter = undefined,
+	defaultFilter = undefined,
+	defaultValue = undefined,
 	displayAsList = false,
 	readOnly = false,
 	listDirection = "column",
-	noOptionsMessage = "No options",
+	noOptionsMessage = <i>No options</i>,
+	keyboardControls = undefined,
+	name,
 	ref,
 	...props
-}: Omit<ComponentProps<"div">, "name" | "ref">
+}: {
+	options: readonly DropdownOption<Value>[],
+	value?: Value,
+	setValue?: (value: Value) => void,
+	selectDefaultValue?: boolean,
+	captureInputs?: boolean,
+	defaultExpanded?: boolean,
+	filter?: string,
+	defaultFilter?: string,
+	defaultValue?: Value,
+	displayAsList?: boolean,
+	readOnly?: boolean,
+	listDirection?: "row" | "column",
+	noOptionsMessage?: ReactNode,
+	keyboardControls?: boolean,
+} & Omit<ComponentProps<"div">, "name" | "ref">
 	& Pick<ComponentProps<"input">, "name" | "ref">
-	& {
-		options: readonly DropdownOption<Value>[],
-		value?: Value,
-		setValue?: (value: Value) => void,
-		selectDefaultValue?: boolean,
-		captureInputs?: boolean,
-		defaultExpanded?: boolean,
-		filter?: string,
-		defaultFilter?: string,
-		defaultValue?: Value,
-		displayAsList?: boolean,
-		readOnly?: boolean,
-		listDirection?: "row" | "column",
-		noOptionsMessage?: string,
-	}
 ): ReactElement {
 	const dropdown = useRef<HTMLDivElement>(null);
 	const listRef = useRef<HTMLDivElement>(null);
@@ -75,28 +76,6 @@ export function Dropdown<Value extends DropdownValue>({
 	}, [expanded]);
 
 	useEffect(() => {
-		if (!expanded) {
-			setInternalFilter(defaultFilter);
-		}
-		const keydownListener = (event: KeyboardEvent) => {
-			if (expanded && !internalFilter && /^[a-zA-Z0-9_ ]$/.test(event.key)) {
-				setInternalFilter("");
-			}
-		};
-		const clickListener = (event: MouseEvent) => {
-			if (dropdown.current && !dropdown.current.contains(event.target as Node)) {
-				setExpanded(false);
-			}
-		};
-		document.addEventListener("keydown", keydownListener);
-		document.addEventListener("click", clickListener);
-		return () => {
-			document.removeEventListener("keydown", keydownListener);
-			document.removeEventListener("click", clickListener);
-		};
-	}, [expanded, internalFilter]);
-
-	useEffect(() => {
 		if (readOnly) {
 			setExpanded(false);
 		}
@@ -121,8 +100,58 @@ export function Dropdown<Value extends DropdownValue>({
 	}, [options, internalFilter]);
 
 	const filteredOptionValuePreview = useMemo(() => {
-		return internalFilter && !filteredOptions.some(option => option.value === internalValue) ? filteredOptions[0]?.value : undefined;
+		return internalFilter && internalValue !== undefined && !filteredOptions.some(option => option.value === internalValue) ? filteredOptions[0]?.value : undefined;
 	}, [filteredOptions, internalValue]);
+
+	useEffect(() => {
+		if (!expanded && filter === undefined) {
+			setInternalFilter(defaultFilter);
+		}
+		const keydownListener = (event: KeyboardEvent) => {
+			if (keyboardControls !== false && (expanded || keyboardControls)) {
+				if (!internalFilter && /^[a-z0-9äöüß ]$/i.test(event.key)) {
+					setInternalFilter("");
+				}
+				switch (event.key) {
+					case "ArrowDown":
+					case "ArrowUp":
+						event.preventDefault();
+						if (filteredOptions.length === 0) return;
+						const currentIndex = filteredOptions.findIndex(o => o.value === internalValue);
+						let nextIndex = 0;
+						if (event.key === "ArrowDown") {
+							nextIndex = currentIndex === -1 ? 0 : (currentIndex + 1) % filteredOptions.length;
+						} else {
+							nextIndex = currentIndex <= 0 ? filteredOptions.length - 1 : currentIndex - 1;
+						}
+						setValueBoth(filteredOptions[nextIndex].value);
+						break;
+					case "Enter":
+						{
+							const value = filteredOptionValuePreview ?? internalValue;
+							if (value !== undefined) {
+								setValueBoth(value);
+								setExpanded(false);
+							}
+						}
+						break;
+					default:
+						break;
+				}
+			}
+		};
+		const clickListener = (event: MouseEvent) => {
+			if (dropdown.current && !dropdown.current.contains(event.target as Node)) {
+				setExpanded(false);
+			}
+		};
+		document.addEventListener("keydown", keydownListener);
+		document.addEventListener("click", clickListener);
+		return () => {
+			document.removeEventListener("keydown", keydownListener);
+			document.removeEventListener("click", clickListener);
+		};
+	}, [expanded, internalValue, filteredOptionValuePreview, internalFilter, filteredOptions]);
 
 	const list = <div className={`dropdown-list dropdown-list-${listDirection}`}>
 		<div {...(displayAsList ? props : {})} ref={listRef}>
@@ -139,7 +168,7 @@ export function Dropdown<Value extends DropdownValue>({
 				}}
 			>
 				{option.label}
-			</div>) : <div className="dropdown-item">{noOptionsMessage}</div>}
+			</div>) : (noOptionsMessage && <div className="dropdown-item">{noOptionsMessage}</div>)}
 		</div>
 	</div>;
 
@@ -178,7 +207,7 @@ export function Dropdown<Value extends DropdownValue>({
 								}
 							}
 						}} /></>
-					) : <i>{noOptionsMessage}</i>}
+					) : noOptionsMessage}
 				</div>
 				<Icon icon={`keyboard_arrow_${expanded ? "up" : "down"}`} className="dropdown-icon" />
 				{list}
