@@ -46,6 +46,7 @@ export function Dropdown<Value extends DropdownValue>({
 ): ReactElement {
 	const dropdown = useRef<HTMLDivElement>(null);
 	const listRef = useRef<HTMLDivElement>(null);
+	const [autoScroll, setAutoScroll] = useState(false);
 	const [expanded, setExpanded] = useState(defaultExpanded);
 	const [internalFilter, setInternalFilter] = useState<string | undefined>(filter ?? defaultFilter);
 	const [uncontrolledValue, setUncontrolledValue] = useState<Value | undefined>(value ?? defaultValue);
@@ -68,12 +69,13 @@ export function Dropdown<Value extends DropdownValue>({
 
 	useEffect(() => {
 		const list = listRef.current;
-		if (expanded && list) {
+		if (expanded && list && autoScroll) {
 			if (list.scrollHeight > list.clientHeight) {
 				list.querySelector(".dropdown-item.active")?.scrollIntoView({ block: "center" });
+				setAutoScroll(false);
 			}
 		}
-	}, [internalValue, expanded]);
+	}, [expanded, autoScroll]);
 
 	useEffect(() => {
 		if (readOnly) {
@@ -125,13 +127,15 @@ export function Dropdown<Value extends DropdownValue>({
 							nextIndex = currentIndex <= 0 ? filteredOptions.length - 1 : currentIndex - 1;
 						}
 						setValueBoth(filteredOptions[nextIndex].value);
+						setAutoScroll(true);
 						break;
 					case "Enter":
 						{
+							event.preventDefault();
 							const value = filteredOptionValuePreview ?? internalValue;
 							if (value !== undefined) {
 								setValueBoth(value);
-								setExpanded(false);
+								dropdown.current?.blur();
 							}
 						}
 						break;
@@ -140,32 +144,20 @@ export function Dropdown<Value extends DropdownValue>({
 				}
 			}
 		};
-		const clickListener = (event: MouseEvent) => {
-			if (dropdown.current && !dropdown.current.contains(event.target as Node)) {
-				setExpanded(false);
-			}
-		};
+
 		document.addEventListener("keydown", keydownListener);
-		document.addEventListener("click", clickListener);
 		return () => {
 			document.removeEventListener("keydown", keydownListener);
-			document.removeEventListener("click", clickListener);
 		};
 	}, [expanded, internalValue, filteredOptionValuePreview, internalFilter, filteredOptions]);
 
 	const list = <div className={`dropdown-list dropdown-list-${listDirection}`}>
 		<div {...(displayAsList ? props : {})} ref={listRef}>
-			{filteredOptions.length ? filteredOptions.map(option => <div
+			{filteredOptions.length ? filteredOptions.map((option, index) => <div
 				key={option.value?.toString()}
+				tabIndex={-1}
+				data-option={index}
 				className={"dropdown-item" + (option.value == (filteredOptionValuePreview ?? internalValue) ? " active" : "")}
-				{...{
-					[captureInputs ? "onClickCapture" : "onClick"]: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-						if (captureInputs) {
-							event.stopPropagation();
-						}
-						setValueBoth(option.value);
-					}
-				}}
 			>
 				{option.label}
 			</div>) : (noOptionsMessage && <div className="dropdown-item">{noOptionsMessage}</div>)}
@@ -176,19 +168,39 @@ export function Dropdown<Value extends DropdownValue>({
 		<input type="hidden" readOnly value={internalValue?.toString() ?? ""} name={name} ref={ref} />
 		{displayAsList
 			? list
-			: <div {...props} className={`dropdown ${expanded ? "dropdown-expanded" : ""} ${readOnly ? "dropdown-read-only" : ""}`} ref={dropdown} {...{
-				[captureInputs ? "onClickCapture" : "onClick"]: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-					if (captureInputs && !(event.target instanceof HTMLDivElement && event.target.classList.contains("dropdown-item"))) {
-						event.stopPropagation();
+			: <div
+				{...props}
+				className={`dropdown ${expanded ? "dropdown-expanded" : ""} ${readOnly ? "dropdown-read-only" : ""}`}
+				ref={dropdown}
+				tabIndex={readOnly ? undefined : 0}
+				onFocus={() => (setExpanded(true), setAutoScroll(true))}
+				onBlur={event => {
+					const target = event.relatedTarget;
+					if (target && (target instanceof HTMLElement)) {
+						const item = target.closest(".dropdown-item");
+						if (item && listRef.current?.contains(item)) {
+							const index = item.getAttribute("data-option");
+							if (index !== null) {
+								const option = filteredOptions[parseInt(index, 10)];
+								if (option) {
+									setValueBoth(option.value);
+								}
+							}
+						}
 					}
-					if (dropdown.current && options.length && !(event.target instanceof HTMLInputElement) && !readOnly) {
-						setExpanded(pre => !pre);
+					setExpanded(false);
+				}}
+				{...{
+					[captureInputs ? "onClickCapture" : "onClick"]: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+						if (captureInputs && !(event.target instanceof HTMLDivElement && event.target.classList.contains("dropdown-item"))) {
+							event.stopPropagation();
+						}
 					}
-				}
-			}}>
+				}}
+			>
 				<div className="dropdown-value">
 					{options.length ? (
-						!expanded || internalFilter === undefined ? options.find(option => option.value == internalValue)?.label : <><Icon search /><input type="text" autoFocus spellCheck={false} value={internalFilter} {...{
+						!expanded || internalFilter === undefined ? options.find(option => option.value == internalValue)?.label : <><Icon search /><input type="text" autoFocus spellCheck={false} value={internalFilter} tabIndex={-1} {...{
 							[captureInputs ? "onInputCapture" : "onInput"]: (event: FormEvent<HTMLInputElement>) => {
 								if (captureInputs) {
 									event.stopPropagation();
@@ -200,10 +212,12 @@ export function Dropdown<Value extends DropdownValue>({
 									if (captureInputs) {
 										event.stopPropagation();
 									}
-									if (filteredOptionValuePreview !== undefined) {
-										setValueBoth(filteredOptionValuePreview);
+									event.preventDefault();
+									const value = filteredOptionValuePreview ?? internalValue;
+									if (value !== undefined) {
+										setValueBoth(value);
+										(document.activeElement as HTMLElement).blur();
 									}
-									setExpanded(false);
 								}
 							}
 						}} /></>
