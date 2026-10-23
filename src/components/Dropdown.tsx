@@ -67,14 +67,16 @@ export function Dropdown<Value extends DropdownValue>({
 		}
 	}, [options]);
 
+	const prevExpanded = useRef(false);
 	useEffect(() => {
 		const list = listRef.current;
 		if (expanded && list && autoScroll) {
 			if (list.scrollHeight > list.clientHeight) {
-				list.querySelector(".dropdown-item.active")?.scrollIntoView({ block: "center" });
+				list.querySelector(".dropdown-item.active")?.scrollIntoView(expanded === prevExpanded.current ? { block: "nearest", behavior: "smooth" } : { block: "center", ["container" as keyof ScrollIntoViewOptions]: "nearest" });
 				setAutoScroll(false);
 			}
 		}
+		prevExpanded.current = expanded;
 	}, [expanded, autoScroll]);
 
 	useEffect(() => {
@@ -130,8 +132,10 @@ export function Dropdown<Value extends DropdownValue>({
 						setAutoScroll(true);
 						break;
 					case "Enter":
+						event.preventDefault();
+						// [[fallthrough]];
+					case "Tab":
 						{
-							event.preventDefault();
 							const value = filteredOptionValuePreview ?? internalValue;
 							if (value !== undefined) {
 								setValueBoth(value);
@@ -152,7 +156,26 @@ export function Dropdown<Value extends DropdownValue>({
 	}, [expanded, internalValue, filteredOptionValuePreview, internalFilter, filteredOptions]);
 
 	const list = <div className={`dropdown-list dropdown-list-${listDirection}`}>
-		<div {...(displayAsList ? props : {})} ref={listRef}>
+		<div {...(displayAsList ? props : {})}
+			tabIndex={-1}
+			ref={listRef}
+			onMouseDown={event => {
+				if (event.target === listRef.current) {
+					event.preventDefault();
+				}
+				if (displayAsList && event.target instanceof HTMLElement) {
+					const item = event.target.closest(".dropdown-item");
+					if (item) {
+						const index = item.getAttribute("data-option");
+						if (index !== null) {
+							const option = filteredOptions[parseInt(index, 10)];
+							if (option) {
+								setValueBoth(option.value);
+							}
+						}
+					}
+				}
+			}}>
 			{filteredOptions.length ? filteredOptions.map((option, index) => <div
 				key={option.value?.toString()}
 				tabIndex={-1}
@@ -190,17 +213,10 @@ export function Dropdown<Value extends DropdownValue>({
 					}
 					setExpanded(false);
 				}}
-				{...{
-					[captureInputs ? "onClickCapture" : "onClick"]: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-						if (captureInputs && !(event.target instanceof HTMLDivElement && event.target.classList.contains("dropdown-item"))) {
-							event.stopPropagation();
-						}
-					}
-				}}
 			>
 				<div className="dropdown-value">
 					{options.length ? (
-						!expanded || internalFilter === undefined ? options.find(option => option.value == internalValue)?.label : <><Icon search /><input type="text" autoFocus spellCheck={false} value={internalFilter} tabIndex={-1} {...{
+						!expanded || internalFilter === undefined ? options.find(option => option.value == internalValue)?.label : <><Icon search /><input type="text" autoFocus spellCheck={false} value={internalFilter} tabIndex={-1} enterKeyHint="done" {...{
 							[captureInputs ? "onInputCapture" : "onInput"]: (event: FormEvent<HTMLInputElement>) => {
 								if (captureInputs) {
 									event.stopPropagation();
