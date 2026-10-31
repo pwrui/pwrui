@@ -23,6 +23,16 @@ $radius: var(--radius);
   }
 }
 
+html {
+  box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
 /* buttons */
 
 button {
