@@ -1,4 +1,4 @@
-import { ComponentProps, ReactElement, useCallback, useEffect, useRef, useState } from "react";
+import { ComponentProps, ReactElement, useCallback, useState } from "react";
 
 import { Button } from "./Button.js";
 import { Icon } from "./Icon.js";
@@ -25,25 +25,14 @@ export function Checkbox({
 ): ReactElement {
   const [uncontrolledChecked, setUncontrolledChecked] = useState(defaultChecked ?? false);
   const internalChecked = checked ?? uncontrolledChecked;
-  const isInitialRender = useRef(true);
-
-  useEffect(() => {
-    if (isInitialRender.current) {
-      isInitialRender.current = false;
-      return;
-    }
-    setChecked?.(uncontrolledChecked);
-  }, [setChecked, uncontrolledChecked]);
 
   return <>
     <input type="checkbox" style={{ display: "none" }} readOnly checked={internalChecked} name={name} ref={ref} />
     <Button
       onPress={useCallback(() => {
-        if (checked !== undefined) {
-          setChecked?.(!checked);
-        } else {
-          setUncontrolledChecked(prev => !prev);
-        }
+        const next = !(checked ?? uncontrolledChecked);
+        if (checked === undefined) setUncontrolledChecked(next);
+        setChecked?.(next);
       }, [checked, setChecked, setUncontrolledChecked])}
       style={{ ...style }}
       className="transparent"
